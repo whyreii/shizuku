@@ -22,7 +22,7 @@
 
 **Syrup is colour only, never a surface.** It appears in tier edges, the room wash, medal tints, pips and the rail's active marker.
 
-The **8px chamfer** is deliberate and measurable at 100% (field check in the palette study). It applies to frosted panels and the modal; etched surfaces keep square corners.
+The **8px chamfer** is deliberate and measurable at 100% (field check in the palette study). It applies to **frosted panels and the modal only** — not the stage card (its frame is a 2C hero), not gold hardware, not inputs. Etched surfaces keep square corners.
 
 ## 2. Palette
 
@@ -30,11 +30,11 @@ Swatches and the gold-vs-S+ comparison: `docs/art-direction-palette.png`.
 
 ![palette study](art-direction-palette.png)
 
-### Base surface — two options, navy is retired
+### Base surface — A approved, B kept as the alternate
 
 | | Page | Panel | Raised | Line | Why |
 |---|---|---|---|---|---|
-| **A · Charcoal Sea** *(recommended)* | `#0b0c0b` | `#141614` | `#1e211e` | `#2a2e2a` | neutral warm-black; frost reads cool, gold reads warm; the syrup ladder carries all the colour |
+| **A · Charcoal Sea** *(approved)* | `#0b0c0b` | `#141614` | `#1e211e` | `#2a2e2a` | neutral green-black; frost reads cool, gold reads warm; the syrup ladder carries all the colour |
 | **B · Ink Violet** | `#08070f` | `#100e1a` | `#191627` | `#262238` | purple-black night; ties to grape/plum, but competes with tier C |
 
 Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1).
@@ -118,32 +118,32 @@ Rules: titles and names keep capitals; every other string is lowercase; no excla
 
 ## 8. Phase 2C
 
-**I did not receive a 2C section.** The six items named in your review are included here; if 2C carried specifics (order, references, constraints), resend them and I will fold them in before building.
+**Received in review.** The six items below are the agreed scope; their hero specs (frame-by-frame for the roll reveal and fountain, frame designs per tier) are written at the 2C step and approved before anything is built.
 
 | Item | Proposed direction | Lands |
 |---|---|---|
-| **Per-tier card frames** | frame is the tier: S+ foil-ice edge + specular; S grape bevel; A ramune seam; B melon etched; C plum matte; D slush plain. No colour-only frames. | surfaces pass |
-| **Fountain hero** | the basin becomes the tab's hero (larger shell, 12 rim notches, water line, tier numeral), perks secondary. | surfaces pass |
-| **Wordmark** | custom "Shizuku" lettering (Instrument Serif base, hand-cut terminals) as an inline SVG; header + favicon. | after icons |
-| **Illustrated empty states** | authored SVG, not text: card back on the stage, empty 10-slot rack, dry basin, sealed box. One drawing hand, ink + frost. | surfaces pass |
-| **Two rail alternatives** | A) current 72px floating keys; B) 148px labelled rail with the 2px marker. Contact sheet renders both before choosing. | before surfaces |
-| **Optional sound** | ROLL / CLAIM / purchase cues, **off by default**, toggle in Settings, no autoplay, no dependency (WebAudio or `<audio>` with tiny assets). | last, opt-in |
+| **Per-tier card frames** | frame is the tier: S+ foil-ice edge + specular; S grape bevel; A ramune seam; B melon etched; C plum matte; D slush plain. No colour-only frames. Applied to stage, album cards, inspector. | 2C |
+| **Fountain hero** | basin as the tab's hero (larger shell, 12 rim notches, water line, tier numeral, droplets on purchase), perks secondary. | 2C |
+| **Wordmark** | custom "Shizuku" lettering + droplet mark (Instrument Serif base, hand-cut terminals) as inline SVG; header + favicon. | 2C |
+| **Illustrated empty states** | authored SVG, not text: empty shaved-ice bowl for Wishes/Loot, card back on the stage, dry basin. One drawing hand, ink + frost. | 2C |
+| **Two rail alternatives** | A) current 72px floating keys; B) 148px labelled rail with the 2px marker. Contact sheet renders both before choosing. | 2C |
+| **Optional sound** | ROLL / CLAIM / purchase cues, **off by default**, toggle in Settings, no autoplay. **No audio assets until file sizes and licences are provided.** | 2C, last |
 
 ## 9. Build order and gates
 
-1. Icons in `src/iconDrafts.tsx` → contact sheet (16/24/48, ink/frost, rail A/B) → approval.
-2. Surfaces + texture + chamfer (base palette A or B).
-3. Tier colours + per-tier frames.
-4. Motion (four moments).
-5. Copy.
-6. Type (Zen Kaku) last, after the surface pass settles.
-7. Phase 2C items in the order above.
+Repo: `git init` done, `.gitignore` covers `node_modules/` and `dist/`, initial commit `70be4be` (includes the Phase 1 fixes, since 1A was already implemented when the repo was created).
 
-Each step: `npm run build`, `npm run lint` (0 errors), 1440 + 1772 sweep, 0 text under 11px, timer format unchanged, reduced-motion pass, input-during-animation pass.
+1. **Phase 1A** — done and re-verified (timer, rail, inspector, `default.jpg` purge).
+2. **Icons** in `src/iconDrafts.tsx` → contact sheet (16/24/48, ink/frost, rail A/B) → **stop for sign-off**.
+3. **Surfaces + texture + tier colours** (base A), then the visual rebuilds of **Medals, Fountain, Wishes, Loot** in the new materials, so nothing is styled twice.
+4. **Phase 2C** — hero specs first, approval, then build (frames, Fountain hero, wordmark, empty states, rail choice, sound last).
+5. **Motion**, then **copy**.
+6. **Type** (Zen Kaku) last.
 
-## 10. Open questions
+Each step: `npm run build`, `npm run lint` (0 errors), 1440 + 1772 sweep, 0 text under 11px, one timer format, reduced-motion pass, input-during-animation pass.
 
-1. **Base palette:** A Charcoal Sea (recommended) or B Ink Violet?
-2. **2C:** please resend the section; I only have the six item names.
-3. **Sound:** off by default (my assumption) — confirm.
-4. **Chamfer scope:** frosted panels + modal only, or also the stage card frame?
+## 10. Decisions and open questions
+
+**Decided:** base A (Charcoal Sea); S+ yuzu `#e4f0a8`; C plum; D slush; Zen Kaku body with Bakbak numerals; chamfer on frosted panels + modal only; sound off by default; all four motion moments.
+
+**Open:** 2C hero specs to be written at that step (roll reveal frame-by-frame, fountain, per-tier frames); sound assets only after file sizes and licences are provided.
