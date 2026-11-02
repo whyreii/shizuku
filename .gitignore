@@ -1,2 +1,6 @@
 node_modules/
 dist/
+
+# local caches written by the roster scripts; not needed to build or run
+scripts/.roster-cache*.json
+scripts/.preview-*.json
