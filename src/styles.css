@@ -8771,3 +8771,201 @@ kbd {
     inset 0 0 0 1px rgba(255, 255, 255, 0.06),
     inset 0 -2px 0 rgba(255, 255, 255, 0.05);
 }
+
+/* ==================================================================
+   2B-iv: wishes - a lit ice plinth, etched slots, gold off the cards
+   ================================================================== */
+
+/* the plinth card is a frosted pane, cut at one corner, standing on its base */
+.plinth-card {
+  background-color: var(--panel);
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 46%);
+  background-size: 64px 64px, auto;
+  background-repeat: repeat, no-repeat;
+  border-radius: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* the starwish is lit along its top edge; gold is hardware, not decoration */
+.plinth.lit .plinth-card {
+  box-shadow:
+    inset 0 2px 0 rgba(154, 217, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+}
+
+.plinth-card:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 0 0 2px var(--frost),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* the stand is charcoal; the lit edge is frost */
+.plinth-stand {
+  background: linear-gradient(180deg, #23271f 0%, #141713 45%, #080a08 100%);
+}
+
+.plinth-stand::before {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+}
+
+.plinth.lit .plinth-stand::before {
+  background: linear-gradient(90deg, transparent, var(--frost), transparent);
+  box-shadow: 0 0 6px rgba(154, 217, 255, 0.45);
+}
+
+/* a pool of light at the foot of the plinth, not a halo behind the card */
+.plinth-glow {
+  top: auto;
+  bottom: 22px;
+  left: 50%;
+  width: 260px;
+  height: 84px;
+  margin-left: -130px;
+  border-radius: 50%;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(154, 217, 255, 0.14),
+    transparent 70%
+  );
+  opacity: 0.55;
+}
+
+.plinth.lit .plinth-glow {
+  opacity: 1;
+}
+
+/* the boost meter is a cut slot holding frost */
+.plinth-bar {
+  background: #0c0f0c;
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.plinth-bar i {
+  background: linear-gradient(90deg, rgba(154, 217, 255, 0.5), var(--frost));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.plinth-mult {
+  color: var(--frost);
+}
+
+/* the empty plinth is a recess, not a dashed placeholder */
+.plinth-card.is-empty {
+  padding: 0;
+  min-height: 300px;
+  background-color: #0a0d0a;
+  background-image:
+    radial-gradient(120% 60% at 50% 0%, rgba(154, 217, 255, 0.05), transparent 60%),
+    linear-gradient(180deg, #0e110e, #080a08);
+  box-shadow:
+    inset 0 4px 12px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.plinth-card.is-empty::before {
+  content: none;
+}
+
+.plinth-empty {
+  font-family: var(--ui);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* empty wish slots are cut into the surface */
+.wish-slot {
+  background-color: #0b0e0b;
+  background-image:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.018) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(165deg, #121512, #080a08);
+  box-shadow:
+    inset 0 2px 7px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  opacity: 1;
+}
+
+.wish-slot::after {
+  content: none;
+}
+
+/* the starwish in the fan is lit the same way as the plinth card */
+.wish-item.is-star .wish-card {
+  box-shadow:
+    inset 0 2px 0 rgba(154, 217, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* unwish: a dark key, signal only on hover */
+.wish-x {
+  background: #161a16;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+}
+
+.wish-x:hover {
+  color: var(--signal);
+  box-shadow: inset 0 -2px 0 var(--signal);
+}
+
+/* no navy left behind missing art */
+.cardface {
+  background-color: var(--panel);
+}
+
+/* 2B-iv corrections */
+
+/* an empty slot must be the same height as a wish card: art ratio + name band */
+.wish-slot {
+  aspect-ratio: auto;
+  padding-bottom: 24px;
+  background-image: linear-gradient(165deg, #121512, #080a08);
+}
+
+.wish-slot::before {
+  content: "";
+  display: block;
+  width: 100%;
+  padding-top: 139.6%;
+}
+
+/* the stand's lit edge belongs on its front face, not hidden behind the card */
+.plinth-stand::before {
+  top: auto;
+  bottom: 0;
+}
+
+/* the stand reads as a front face: lighter where it meets the card */
+.plinth-stand {
+  background: linear-gradient(180deg, #1c201a 0%, #141713 40%, #0a0d0a 100%);
+}
+
+/* the lit card and the star card outrank a plain :focus-visible selector,
+   so their focus ring has to be restated at the same weight */
+.plinth.lit .plinth-card:focus-visible {
+  box-shadow:
+    inset 0 0 0 2px var(--frost),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.wish-item.is-star .wish-card:focus-visible {
+  box-shadow:
+    inset 0 0 0 2px var(--frost),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
