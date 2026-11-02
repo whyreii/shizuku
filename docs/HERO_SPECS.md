@@ -295,7 +295,7 @@ Deviations from §3, for the record:
 |---|---|---|
 | B1 motion | **shipped** `ab6e8a2` | tokens in `src/tokens.css`; turn 40°, per-tier turn 220 / 260 / 300 / 340ms, fade 180ms; S+ stamp at 560ms, sweep 380ms starting at 340ms, sparkles 5 × 60ms once. ROLL free at 300ms: a second press at 320ms, while the card still reported `reveal-turn`, took the meter 10 → 8. Reduced motion: card `animation-name: none`, 120ms fade, two presses 60ms apart both landed |
 | B2 copy | **shipped** `9455a40` | the 11 strings in `ART_DIRECTION` §7; `sealed / locked / built` kept as agreed |
-| B3 type | **shipped** `3c79288` | Zen Kaku Gothic New at 400 / 500 / 700 (900 is unused); Instrument Serif and Bakbak One kept; Archivo, Russo One, Kanit and Baloo 2 dropped from `index.html`. Numbers pinned to Bakbak: `.roll-meta span`, `.card-value`, `.tile-rank`, `.head-pill-text span`. Measured "shizuku" at 40px: Zen 127px, monospace 154px — the font is live, not a fallback |
+| B3 type | **shipped** `3c79288` | Zen Kaku Gothic New at 400 / 500 / 700 (900 is unused); Instrument Serif and Bakbak One kept; Archivo, Russo One, Kanit and Baloo 2 dropped from `index.html`. Numbers pinned to Bakbak: `.roll-meta span`, `.card-value`, `.tile-rank`, `.head-pill-text small`. Measured "shizuku" at 40px: Zen 127px, monospace 154px — the font is live, not a fallback |
 | B4 sweep | **verified** | 1440 and 1772 across all seven tabs: 0 text under 11px, no horizontal overflow, 0 colon-formatted times (`59m 47s` is the only format), 0 console errors, 0 `backdrop-filter` |
 
 Known limits:
