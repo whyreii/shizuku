@@ -154,6 +154,23 @@ append-only block per surface.
 **Fallback.** If C and D are not distinguishable in the grayscale test at 168px,
 ship **four** frames — S+ / S / A-B / C-D — rather than six near-identical ones.
 
+**Status 2026-11-02 — test failed, decision pending.** First implementation (outer
+ring + inner lines) fixed a real bug — the tier ring was an inset shadow on
+`.card3d-inner`, i.e. painted *under* the full-bleed portrait, so it was never
+visible, and neither was the starwish ring. With the ring moved to the card box
+and thickened to 2–3px, S+ and S are distinguishable, but **A/B/C/D are not** at
+186px in grayscale: C and D have no ring at all and their 2px inner line
+disappears where the art is dark. Edge weight alone cannot carry six tiers over a
+full-bleed image. Three options, none chosen yet:
+
+1. **Mat** — a 6px inset band of card surface around the art; the tier lives in
+   the mat (foil strip, groove, seam, etched lip). Gives the frame area; changes
+   the card composition slightly.
+2. **Corner vocabulary** — one corner treatment per tier (cut, rounded, notched,
+   square, half-cut, plain). Survives grayscale without touching the art area.
+3. **Four frames** — S+ / S / A-B / C-D, which still fails for A vs B and C vs D
+   with edges alone unless combined with 1 or 2.
+
 Rules:
 
 - Tier colour never appears as fill, wash or glow on the frame — edge and line

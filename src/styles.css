@@ -568,31 +568,46 @@ textarea:focus {
   border-radius: 18px;
   overflow: hidden;
   background: radial-gradient(120% 90% at 50% 8%, #16283d 0%, #0a1220 55%, #060a10 100%);
-  /* the tier edge is drawn as an inset ring, not a border: a 1px stroke that
-     sits on a rounded corner gets antialiased at fractional zoom, and that is
-     what showed as coloured speckles along the bottom of the card */
   border: 0;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--tier) 70%, #070c13),
-    0 22px 48px -24px #000;
+  box-shadow: 0 22px 48px -24px #000;
   transform-style: preserve-3d;
+}
+
+/* Frame tokens live on the card box, not the inner: an inset ring on the
+   inner paints *under* the full-bleed portrait, which is why the tier edge
+   was invisible. The ring belongs outside the art, the inner line on ::before. */
+.card3d {
+  --edge-w: 0px;
+  --edge-c: transparent;
+  --inner-inset: 5px;
+  --inner-radius: 13px;
+  --inner-top: 0px;
+  --inner-top-c: transparent;
+  --inner-bottom: 0px;
+  --inner-bottom-c: transparent;
+  --inner-left: 0px;
+  --inner-left-c: transparent;
+  --inner-right: 0px;
+  --inner-right-c: transparent;
+  box-shadow: 0 0 0 var(--edge-w) var(--edge-c);
 }
 
 .card3d-inner::before {
   content: "";
   position: absolute;
-  inset: 6px;
-  border-radius: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  inset: var(--inner-inset);
+  border-radius: var(--inner-radius);
+  border-top: var(--inner-top) solid var(--inner-top-c);
+  border-bottom: var(--inner-bottom) solid var(--inner-bottom-c);
+  border-left: var(--inner-left) solid var(--inner-left-c);
+  border-right: var(--inner-right) solid var(--inner-right-c);
   pointer-events: none;
   z-index: 4;
 }
 
-.card3d.is-starwish .card3d-inner,
-.card3d.is-soulmate .card3d-inner {
-  box-shadow:
-    inset 0 0 0 1px var(--signal),
-    0 22px 48px -24px #000;
+.card3d.is-starwish,
+.card3d.is-soulmate {
+  box-shadow: 0 0 0 2px var(--signal);
 }
 
 .card3d-art {
@@ -1917,7 +1932,7 @@ textarea:focus {
 }
 
 /* owned specials — rarity you can see at a glance */
-/* S+ owned cards get a slow foil sweep */
+/* S+ foil: one pass per reveal, never a loop (2C-b) */
 .card3d.tier-sp .card3d-inner::after {
   content: "";
   position: absolute;
@@ -1929,18 +1944,21 @@ textarea:focus {
     transparent 56%
   );
   transform: translateX(-120%);
-  animation: owned-sweep 5.5s ease-in-out infinite;
   pointer-events: none;
   z-index: 5;
 }
 
-@keyframes owned-sweep {
-  0%,
-  62% {
+@media (prefers-reduced-motion: no-preference) {
+  .card3d.tier-sp .card3d-inner::after {
+    animation: foil-sweep 380ms cubic-bezier(0.22, 1, 0.36, 1) 180ms 1 forwards;
+  }
+}
+
+@keyframes foil-sweep {
+  from {
     transform: translateX(-120%);
   }
-  86%,
-  100% {
+  to {
     transform: translateX(120%);
   }
 }
@@ -9129,4 +9147,73 @@ kbd {
 .loot-chip.rolls i {
   background: none;
   color: #f7c667;
+}
+
+/* ==================================================================
+   2C-b: the frame is the tier - edge weight and placement, not hue.
+   The ring sits on the card box, outside the art; the inner line is
+   ::before at inset 5px, above the art.
+   ================================================================== */
+
+/* S+ foil-ice: 2px edge, 3px of light along the top */
+.card3d.tier-sp {
+  --edge-w: 2px;
+  --edge-c: color-mix(in srgb, var(--tier-sp) 80%, transparent);
+  --inner-top: 3px;
+  --inner-top-c: rgba(246, 255, 214, 0.55);
+}
+
+/* S grape bevel: 3px edge, a 2px dark groove inset 3px on all four sides */
+.card3d.tier-s {
+  --edge-w: 3px;
+  --edge-c: color-mix(in srgb, var(--tier-s) 65%, transparent);
+  --inner-inset: 3px;
+  --inner-radius: 15px;
+  --inner-top: 2px;
+  --inner-bottom: 2px;
+  --inner-left: 2px;
+  --inner-right: 2px;
+  --inner-top-c: rgba(0, 0, 0, 0.6);
+  --inner-bottom-c: rgba(0, 0, 0, 0.6);
+  --inner-left-c: rgba(0, 0, 0, 0.6);
+  --inner-right-c: rgba(0, 0, 0, 0.6);
+}
+
+/* A ramune seam: 2px edge, one 24px seam down the left */
+.card3d.tier-a {
+  --edge-w: 2px;
+  --edge-c: color-mix(in srgb, var(--tier-a) 55%, transparent);
+}
+
+.card3d.tier-a .card3d-inner::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 2px;
+  height: 24px;
+  margin-top: -12px;
+  background: color-mix(in srgb, var(--tier-a) 75%, transparent);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* B melon etched: 2px edge, a 3px cut along the top */
+.card3d.tier-b {
+  --edge-w: 2px;
+  --edge-c: color-mix(in srgb, var(--tier-b) 45%, transparent);
+  --inner-top: 3px;
+  --inner-top-c: rgba(0, 0, 0, 0.65);
+}
+
+/* C plum matte: no edge, 2px plum line on the top */
+.card3d.tier-c {
+  --inner-top: 2px;
+  --inner-top-c: color-mix(in srgb, var(--tier-c) 34%, transparent);
+}
+
+/* D slush plain: no edge, 2px neutral line at the base */
+.card3d.tier-d {
+  --inner-bottom: 2px;
+  --inner-bottom-c: #2a2e2a;
 }
