@@ -9425,3 +9425,17 @@ kbd {
     transparent 62%
   );
 }
+
+/* Owned tiles: no tier glow. At the grid's edges it was clipped by the scroll
+   box and the 1px inset ring doubled the edge, so it read as a torn-off rim
+   rather than a glow. The 1px tier border stays. */
+.tile.tier-sp .tile-art,
+.tile.tier-s .tile-art {
+  box-shadow: none;
+}
+
+/* restated after the glow so selection still reads on S/S+ (the tier rule sits
+   later in the sheet and used to win the tie) */
+.tile.is-selected .tile-art {
+  box-shadow: 0 0 0 1px var(--frost) inset;
+}
