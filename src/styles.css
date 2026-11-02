@@ -8969,3 +8969,164 @@ kbd {
     inset 0 0 0 2px var(--frost),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
+
+/* ==================================================================
+   2B-v: loot - a frosted crate, an etched seal, gold on the keys only
+   ================================================================== */
+
+/* the crate is a frosted plate: cut corner, top light, base shadow, no halo */
+.loot-box {
+  background-color: var(--panel);
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 52%);
+  background-size: 64px 64px, auto;
+  background-repeat: repeat, no-repeat;
+  border-radius: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  color: var(--frost);
+}
+
+/* light falls on the lid instead of blooming around the box */
+.loot-glow {
+  inset: 0;
+  border-radius: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(154, 217, 255, 0.13),
+    rgba(154, 217, 255, 0) 46%
+  );
+}
+
+.loot-price {
+  font-size: 14px;
+  color: #f7c667;
+}
+
+/* sealed: the crate is a recess, so it reads as shut, not as missing */
+.loot-box.is-locked {
+  background-color: #0a0d0a;
+  background-image:
+    radial-gradient(120% 60% at 50% 0%, rgba(154, 217, 255, 0.05), transparent 60%),
+    linear-gradient(180deg, #0e110e, #080a08);
+  box-shadow:
+    inset 0 4px 12px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  color: rgba(154, 217, 255, 0.42);
+}
+
+/* the seal is an engraved lip, not a drawn box inside a box */
+.loot-seal {
+  inset: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.loot-lock b {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+/* requirements are cut wells; a met one gets a gold base edge */
+.loot-req li {
+  background: #0d100d;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  color: rgba(166, 185, 204, 0.82);
+}
+
+.loot-req li em {
+  color: #74839a;
+}
+
+.loot-req li.on {
+  color: var(--paper);
+  box-shadow:
+    inset 0 -2px 0 rgba(247, 198, 103, 0.6),
+    inset 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.loot-req li.on em {
+  color: #f7c667;
+}
+
+/* keys: gold for open one, a dark plate for open ten, both with a hard base */
+.loot-key {
+  box-shadow:
+    0 5px 0 #8a6420,
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.loot-key:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow:
+    0 1px 0 #8a6420,
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.loot-key.is-bulk {
+  background: #141614;
+  color: #f7c667;
+  box-shadow:
+    0 4px 0 #2a2e2a,
+    inset 0 -2px 0 rgba(247, 198, 103, 0.45);
+}
+
+.loot-key.is-bulk:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 #2a2e2a,
+    inset 0 -2px 0 rgba(247, 198, 103, 0.45);
+}
+
+.loot-key.is-bulk span {
+  color: rgba(247, 198, 103, 0.72);
+}
+
+.loot-key:disabled,
+.loot-key.is-bulk:disabled {
+  opacity: 1;
+  background: linear-gradient(180deg, #121512, #0b0d0b);
+  color: #b9c4b9;
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* results are etched plates; the kind is a word, not a 9px stamp */
+.loot-chip {
+  border-radius: 3px;
+  background: #121512;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.loot-chip i {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--frost);
+  font-family: var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.loot-chip.crystal i {
+  background: none;
+}
+
+.loot-chip.shard i {
+  background: none;
+  color: #c3a8ff;
+}
+
+.loot-chip.rolls i {
+  background: none;
+  color: #f7c667;
+}
