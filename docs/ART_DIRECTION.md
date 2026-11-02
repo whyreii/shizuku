@@ -131,6 +131,10 @@ Rules: titles and names keep capitals; every other string is lowercase; no excla
 | **Two rail alternatives** | A) current 72px floating keys; B) 148px labelled rail with the 2px marker. Contact sheet renders both before choosing. | 2C |
 | **Optional sound** | ROLL / CLAIM / purchase cues, **off by default**, toggle in Settings, no autoplay. **No audio assets until file sizes and licences are provided.** | 2C, last |
 
+**Specs:** `docs/HERO_SPECS.md` — written for approval before any 2C code. It holds
+the roll reveal frame-by-frame, the fountain hero, the per-tier frame matrix and
+the acceptance checklist.
+
 ## 9. Build order and gates
 
 Repo: `git init` done, `.gitignore` covers `node_modules/` and `dist/`, initial commit `70be4be` (includes the Phase 1 fixes, since 1A was already implemented when the repo was created).
