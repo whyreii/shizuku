@@ -26,7 +26,7 @@
   --tier-d: #7a8c9c;
 
   --serif: "Instrument Serif", Georgia, serif;
-  --ui: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --ui: "Zen Kaku Gothic New", "Segoe UI", system-ui, sans-serif;
   --sans: var(--ui);
   --mono: var(--ui);
 }
@@ -9913,4 +9913,12 @@ kbd {
   .card3d.tier-s .tier-chip {
     animation: none;
   }
+}
+/* numbers keep the display face: Zen Kaku's figures are proportional and jitter
+   as they count, so every timer, counter and price stays in Bakbak One */
+.head-pill-text span,
+.roll-meta span,
+.card-value,
+.tile-rank {
+  font-family: "Bakbak One", var(--ui);
 }
