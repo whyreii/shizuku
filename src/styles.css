@@ -10802,3 +10802,96 @@ kbd {
 .series-more:hover {
   color: var(--frost);
 }
+/* ---- the gallery owns its scroll ---------------------------------- */
+/* the bars are page chrome, not floating panels: nothing is painted over the
+   body gradient and nothing covers the art. Only the two-column layout has a
+   definite panel height, so only there does the grid scroll inside the page. */
+.series-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0;
+}
+
+.series-page-head {
+  position: static;
+  flex: 0 0 auto;
+  padding: 0 0 10px;
+  background: none;
+}
+
+.series-page-head::after,
+.series-page-foot::before {
+  content: none;
+}
+
+.series-scroll {
+  padding: 4px 8px 0 0;
+  scrollbar-width: thin;
+}
+
+.series-page-foot {
+  position: static;
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 10px 0 0;
+  background: none;
+}
+
+@media (min-width: 1180px) {
+  .col-panel:has(.series-page) {
+    overflow: hidden;
+  }
+
+  .panel:has(.series-page) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .panel:has(.series-page) > .series-view {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .series-page {
+    flex: 1 1 auto;
+  }
+
+  .series-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+/* the star is a row action now: it sits on the name line, not over the art */
+.serie-star {
+  right: 2px;
+  bottom: 0;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border-radius: 0;
+  color: rgba(233, 239, 230, 0.45);
+  opacity: 1;
+}
+
+.serie-card:hover .serie-star,
+.serie-card:focus-within .serie-star {
+  opacity: 1;
+  color: var(--paper);
+}
+
+.serie-star.on {
+  color: var(--frost);
+  background: none;
+  box-shadow: none;
+}
+
+.serie-name,
+.serie-meta {
+  padding-right: 24px;
+}

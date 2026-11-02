@@ -216,6 +216,7 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
         </div>
       </div>
 
+      <div className="series-scroll">
       {shown.length === 0 ? (
         <p className="empty series-none">nothing here</p>
       ) : (
@@ -250,6 +251,7 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
         </button>
       ) : null}
 
+      </div>
       <div className="series-page-foot">
         <span className="series-page-wishes">
           <b>{selected.length}</b> selected
