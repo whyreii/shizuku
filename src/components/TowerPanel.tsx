@@ -24,9 +24,34 @@ export function TowerPanel({ state, act }: Props) {
   const tier = Math.floor(state.tower.floors / TOWER_FLOORS) + 1;
   const fresh = state.tower.floors > 0 && inBasin === 0;
   const filled = fresh ? TOWER_FLOORS : inBasin;
+  const level = filled / TOWER_FLOORS;
+  const dry = filled === 0;
   const affordable = state.kakigori >= cost;
   const gridRef = useRef<HTMLDivElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
   const [scrolling, setScrolling] = useState(false);
+
+  // One pour per purchase. seenFloors starts at the level on mount, so opening
+  // the tab never pours; only a rise in floors does.
+  const seenFloors = useRef(state.tower.floors);
+  const [pour, setPour] = useState<{ key: number; fall: number } | null>(null);
+
+  useEffect(() => {
+    const floors = state.tower.floors;
+    const before = seenFloors.current;
+    seenFloors.current = floors;
+    if (floors <= before) return;
+    const shell = shellRef.current;
+    if (!shell) return;
+    const surface = Math.min(
+      1,
+      (floors % TOWER_FLOORS || TOWER_FLOORS) / TOWER_FLOORS,
+    );
+    const fall = Math.round(shell.getBoundingClientRect().height * (1 - surface));
+    setPour({ key: floors, fall });
+    const done = window.setTimeout(() => setPour(null), 780);
+    return () => window.clearTimeout(done);
+  }, [state.tower.floors]);
 
   useEffect(() => {
     const el = gridRef.current;
@@ -45,29 +70,48 @@ export function TowerPanel({ state, act }: Props) {
   return (
     <div className="stack panel-grid">
       <h2 className="panel-title">Fountain</h2>
-      <div className="basin">
-        <div className="basin-shell" aria-hidden="true">
-          <div
-            className="basin-water"
-            style={{ height: `${(filled / TOWER_FLOORS) * 100}%` }}
-          >
-            <span className="basin-wave" />
+      <div className={`basin${dry ? " is-dry" : ""}`}>
+        <div className="basin-shell" ref={shellRef}>
+          <div className="basin-scene" aria-hidden="true">
+            <div className="basin-water" style={{ height: `${level * 100}%` }}>
+              <span className="basin-wave" />
+            </div>
+            <div className="basin-ticks">
+              {Array.from({ length: TOWER_FLOORS }).map((_, i) => (
+                <i key={i} className={i < filled ? "on" : ""} />
+              ))}
+            </div>
+            {pour ? (
+              <span
+                className="basin-pour"
+                key={pour.key}
+                style={{ "--fall": `${pour.fall}px` } as React.CSSProperties}
+              >
+                <b />
+                <b />
+                <b />
+                <s />
+                <s />
+                <s />
+              </span>
+            ) : null}
           </div>
-          <div className="basin-ticks">
-            {Array.from({ length: TOWER_FLOORS }).map((_, i) => (
-              <i key={i} className={i < filled ? "on" : ""} />
-            ))}
+
+          <div className="basin-floor">
+            <span className="basin-tier">
+              <i>tier</i>
+              {tier}
+            </span>
+            <span className="basin-count">
+              {filled}
+              <i> / {TOWER_FLOORS}</i>
+              <em> basins filled</em>
+            </span>
+            {dry ? <span className="basin-dry">dry</span> : null}
           </div>
         </div>
+
         <div className="basin-body">
-          <div className="basin-left">
-            <span className="basin-title">
-              fountain <b>{filled} / {TOWER_FLOORS}</b>
-            </span>
-            <span className="basin-sub">
-              tier {tier} · basins filled
-            </span>
-          </div>
           <span className="basin-tag">next basin · {formatKakera(cost)}</span>
         </div>
       </div>

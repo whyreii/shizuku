@@ -9436,3 +9436,246 @@ kbd {
 .tile.is-selected .tile-art {
   box-shadow: 0 0 0 1px var(--frost) inset;
 }
+
+/* ==================================================================
+   2C-d: the fountain hero - a basin you look into, perks under it
+   ================================================================== */
+
+/* the bowl is the object, not a strip: it scales with the viewport */
+.basin {
+  padding: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.basin-shell {
+  height: clamp(200px, 13vw, 260px);
+  margin: 0;
+  border-radius: 10px 10px 46% 46% / 10px 10px 24% 24%;
+  overflow: hidden;
+}
+
+/* water, wave, notches and droplets are decoration; the floor line is not */
+.basin-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* twelve rim cuts: small square marks, not a dashed bar */
+.basin-ticks {
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  justify-content: space-between;
+  gap: 2px;
+}
+
+.basin-ticks i {
+  flex: 0 0 5px;
+  height: 4px;
+  border-radius: 0;
+}
+
+/* the price plate is the only thing left under the bowl: keep it on the edge */
+.basin-body {
+  justify-content: flex-end;
+}
+
+/* the tier lives in the bowl, under the surface, not above it */
+.basin-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.basin-tier {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: "Bakbak One", var(--ui);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 0.9;
+  color: var(--paper);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.basin-tier i {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* the wide layout used to hide the count because it lived in the title */
+.basin-count {
+  display: inline;
+  font-family: "Bakbak One", var(--ui);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--frost);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.basin-count i {
+  font-style: normal;
+  font-size: 14px;
+  color: rgba(154, 217, 255, 0.7);
+}
+
+/* the count reads as a sentence, the visible digits stay as they are */
+.basin-count em,
+.basin-say {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.basin-dry {
+  flex: 1 0 100%;
+  margin-top: 2px;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* a dry bowl is etched floor only: no surface, no wave, low contrast */
+.basin.is-dry .basin-water {
+  display: none;
+}
+
+.basin.is-dry .basin-tier,
+.basin.is-dry .basin-count {
+  opacity: 0.42;
+}
+
+/* three droplets from the spout, one ring each where they land */
+.basin-pour {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+.basin-pour b,
+.basin-pour s {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.basin-pour b {
+  width: 3px;
+  height: 3px;
+  margin-left: -1.5px;
+  background: #dff3ff;
+  box-shadow: 0 0 6px rgba(154, 217, 255, 0.85);
+  animation: basin-drop 380ms cubic-bezier(0.4, 0, 0.9, 0.4) forwards;
+}
+
+.basin-pour s {
+  width: 3px;
+  height: 3px;
+  margin: -1px 0 0 -1px;
+  border: 1px solid rgba(226, 246, 255, 0.9);
+  transform: translateY(var(--fall));
+  animation: basin-ring 200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.basin-pour b:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.basin-pour b:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.basin-pour b:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+/* each ring fires when its droplet reaches the new surface */
+.basin-pour s:nth-child(4) {
+  animation-delay: 380ms;
+}
+
+.basin-pour s:nth-child(5) {
+  animation-delay: 450ms;
+}
+
+.basin-pour s:nth-child(6) {
+  animation-delay: 520ms;
+}
+
+@keyframes basin-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.7);
+  }
+  10% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--fall)) scale(1);
+  }
+}
+
+@keyframes basin-ring {
+  0% {
+    opacity: 0.85;
+    transform: translateY(var(--fall)) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--fall)) scale(8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .basin-pour {
+    display: none;
+  }
+
+  .basin-wave {
+    animation: none;
+  }
+}
+
+@media (min-width: 1180px) {
+  /* the bowl gets the larger column; the perks stay the list under it */
+  .panel-grid .basin {
+    grid-column: 1 / span 5;
+  }
+
+  .panel-grid .perk-grid,
+  .panel-grid .drain {
+    grid-column: 6 / span 7;
+  }
+}
