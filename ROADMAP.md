@@ -44,7 +44,7 @@ is the currency.
 | P16 | Series index + per-series modal | ✅ |
 | P17 | Wishes — wishlist, starwish, boost, wish-a-series | ✅ |
 | P18 | Media — galleries live; 12 slots and GIFs never specified | partial |
-| P19 | Personalization — alias + note editor, image override | ✅ (presets not built) |
+| P19 | Personalization — alias + note, image override, 5 wish presets | ✅ |
 | P20 | Settings knobs — novelty + save transport live | partial, rest unspecified |
 | P21 | Progression UI | unspecified |
 | P22 | Ship | — |

@@ -77,6 +77,14 @@ export type BadgeKey =
 
 export type Badges = Record<BadgeKey, number>;
 
+export interface WishPreset {
+  id: string;
+  name: string;
+  wishes: string[];
+  starwish: string | null;
+  savedAt: number;
+}
+
 export interface GameState {
   version: 4;
   kakigori: number;
@@ -107,6 +115,8 @@ export interface GameState {
   wishBoostAt: number;
   /** Pre-rolled kakigori for the current daily cycle. */
   dailyRoll: number;
+  /** Saved wish lineups: five at most. */
+  presets: WishPreset[];
   overrides: Record<string, Override>;
   stats: { rolls: number; claims: number; keys: number };
   log: LogLine[];

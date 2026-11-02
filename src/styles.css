@@ -9972,3 +9972,127 @@ kbd {
 .edit-note::placeholder {
   color: rgba(166, 185, 204, 0.5);
 }
+/* ==================================================================
+   P19: wish presets - five named lineups, replace on apply
+   ================================================================== */
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 680px;
+}
+
+.preset-label {
+  margin-right: 2px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.preset-chip.on {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--frost) 55%, transparent);
+}
+
+.preset-apply {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 4px 5px 10px;
+  border: 0;
+  background: none;
+  color: var(--paper);
+  font-family: var(--ui);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.preset-apply:hover {
+  color: var(--frost);
+}
+
+.preset-apply i {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.preset-del {
+  padding: 4px 8px 5px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--ui);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.preset-del:hover {
+  color: var(--signal);
+}
+
+/* the panel grid puts the row under the wish count, not in a stray cell */
+.panel-grid .preset-row {
+  grid-column: 1 / span 4;
+  align-self: start;
+}
+
+.preset-add,
+.preset-confirm {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-family: var(--ui);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.preset-add:hover,
+.preset-confirm:hover {
+  color: var(--frost);
+  border-bottom-color: var(--frost);
+}
+
+.preset-confirm:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.preset-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preset-input {
+  width: 120px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #0d100d;
+  box-shadow:
+    inset 0 2px 7px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  color: var(--paper);
+  font-family: var(--ui);
+  font-size: 12px;
+}
+
+.preset-input::placeholder {
+  color: rgba(166, 185, 204, 0.5);
+}

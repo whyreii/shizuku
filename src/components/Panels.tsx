@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import {
+  applyPreset,
+  deletePreset,
   divorce,
   keysFor,
+  savePreset,
   toggleStarwish,
   toggleWish,
   wishCap,
@@ -189,6 +192,26 @@ export function WishlistPanel({ state, act }: PanelProps) {
   );
   const starBoost = starwishMultiplier(state);
   const wishBoost = wishMultiplier(state);
+  const [naming, setNaming] = useState(false);
+  const [draft, setDraft] = useState("");
+
+  // the preset whose lineup matches what is on the plinth right now
+  const activePreset = state.presets.find(
+    (p) =>
+      p.starwish === state.starwish &&
+      p.wishes.length === state.wishes.length &&
+      p.wishes.every((id) => state.wishes.includes(id)),
+  );
+
+  const commitPreset = () => {
+    const name = draft.trim();
+    if (!name) return;
+    const next = act((s) => savePreset(s, name));
+    if (next) {
+      setNaming(false);
+      setDraft("");
+    }
+  };
 
   const makeStar = (c: Character) => {
     if (star && star.id !== c.id) {
@@ -253,6 +276,73 @@ export function WishlistPanel({ state, act }: PanelProps) {
         {wishBoost > 1 ? (
           <span>+{Math.round((wishBoost - 1) * 100)}% on wishes</span>
         ) : null}
+      </div>
+
+      <div className="preset-row">
+        <span className="preset-label">presets</span>
+
+        {state.presets.map((preset) => (
+          <span
+            key={preset.id}
+            className={preset.id === activePreset?.id ? "preset-chip on" : "preset-chip"}
+          >
+            <button
+              type="button"
+              className="preset-apply"
+              title={`apply ${preset.name} - ${preset.wishes.length} wishes`}
+              onClick={() => act((s) => applyPreset(s, preset.id))}
+            >
+              {preset.name}
+              <i>{preset.wishes.length}</i>
+            </button>
+            <button
+              type="button"
+              className="preset-del"
+              title={`delete ${preset.name}`}
+              aria-label={`delete ${preset.name}`}
+              onClick={() => act((s) => deletePreset(s, preset.id))}
+            >
+              
+×
+            </button>
+          </span>
+        ))}
+
+        {naming ? (
+          <span className="preset-save">
+            <input
+              autoFocus
+              className="preset-input"
+              value={draft}
+              maxLength={24}
+              placeholder="name"
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") commitPreset();
+                if (event.key === "Escape") {
+                  setNaming(false);
+                  setDraft("");
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="preset-confirm"
+              onClick={commitPreset}
+              disabled={!draft.trim()}
+            >
+              save
+            </button>
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="preset-add"
+            onClick={() => setNaming(true)}
+          >
+            save current
+          </button>
+        )}
       </div>
 
       {others.length === 0 && !star ? (

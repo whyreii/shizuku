@@ -10,6 +10,7 @@ import type {
   Tier,
   UpgradeKey,
   Upgrades,
+  WishPreset,
 } from "./types";
 import { ROSTER, characterById, rankValue } from "./roster";
 import { clampShifts, tierForRank, weightForRank } from "./tiers";
@@ -440,6 +441,82 @@ export function wishCap(state: GameState): number {
   return BASE_WISHES + badgeWishes + towerPerkCount(state, 1) * 2;
 }
 
+/* ------------------------------------------------------------------ *
+ * Wish presets: named lineups, five at most
+ * ------------------------------------------------------------------ */
+
+export const MAX_PRESETS = 5;
+const PRESET_NAME_MAX = 24;
+
+/** Validates saved presets on load: unknown ids and junk entries are dropped. */
+function readPresets(raw: unknown, known: Set<string>): WishPreset[] {
+  if (!Array.isArray(raw)) return [];
+  const out: WishPreset[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const p = entry as Partial<WishPreset>;
+    if (typeof p.name !== "string" || !p.name.trim()) continue;
+    out.push({
+      id: typeof p.id === "string" && p.id ? p.id : `p${out.length + 1}`,
+      name: p.name.trim().slice(0, PRESET_NAME_MAX),
+      wishes: Array.isArray(p.wishes)
+        ? p.wishes
+            .filter((id): id is string => typeof id === "string" && known.has(id))
+            .slice(0, 200)
+        : [],
+      starwish:
+        typeof p.starwish === "string" && known.has(p.starwish)
+          ? p.starwish
+          : null,
+      savedAt: typeof p.savedAt === "number" ? p.savedAt : 0,
+    });
+    if (out.length >= MAX_PRESETS) break;
+  }
+  return out;
+}
+
+/** Snapshot the current lineup. The same name overwrites; a sixth name is refused. */
+export function savePreset(prev: GameState, name: string): GameState {
+  const label = name.trim().slice(0, PRESET_NAME_MAX);
+  if (!label) throw new GameError("Give the preset a name.");
+  const index = prev.presets.findIndex(
+    (p) => p.name.toLowerCase() === label.toLowerCase(),
+  );
+  if (index < 0 && prev.presets.length >= MAX_PRESETS) {
+    throw new GameError(`Five presets is the limit - delete one first.`);
+  }
+  const preset: WishPreset = {
+    id: index >= 0 ? prev.presets[index].id : `p${Date.now().toString(36)}`,
+    name: label,
+    wishes: prev.wishes
+      .filter((id) => characterById(id))
+      .slice(0, wishCap(prev)),
+    starwish: prev.starwish,
+    savedAt: Date.now(),
+  };
+  const presets =
+    index >= 0
+      ? prev.presets.map((p, i) => (i === index ? preset : p))
+      : [...prev.presets, preset];
+  return { ...prev, presets };
+}
+
+/** Replace the current lineup with a preset, clipped to the cap it must fit. */
+export function applyPreset(prev: GameState, presetId: string): GameState {
+  const preset = prev.presets.find((p) => p.id === presetId);
+  if (!preset) return prev;
+  const wishes = preset.wishes
+    .filter((id) => characterById(id))
+    .slice(0, wishCap(prev));
+  const starwish =
+    preset.starwish && characterById(preset.starwish) ? preset.starwish : null;
+  return { ...prev, wishes, starwish };
+}
+
+export function deletePreset(prev: GameState, presetId: string): GameState {
+  return { ...prev, presets: prev.presets.filter((p) => p.id !== presetId) };
+}
+
 /** Relative wish spawn multiplier from Silver and Ruby. */
 /** Starwish makes that one card this many times more likely. */
 /** Fountain perk 2 gives diminishing returns, like Mudae's tower. */
@@ -570,6 +647,7 @@ export function createInitialState(now: number): GameState {
     version: 4,
     kakigori: 0,
     dailyRoll: 0,
+  presets: [],
     lastAccrual: now,
     rolls: ROLLS_PER_RESET,
     nextResetAt: now + RESET_MS,
@@ -641,7 +719,8 @@ export function hydrate(raw: Partial<GameState> & Record<string, unknown>): Game
     badges,
     tower: { ...EMPTY_TOWER, ...((raw.tower as GameState["tower"]) ?? {}), perks: ((raw.tower as GameState["tower"])?.perks ?? []).slice() },
     lastDailyAt: typeof raw.lastDailyAt === "number" ? raw.lastDailyAt : 0,
-    overrides: (raw.overrides as Record<string, Override>) ?? {},
+    presets: readPresets(raw.presets, known),
+  overrides: (raw.overrides as Record<string, Override>) ?? {},
     stats: (raw.stats as GameState["stats"]) ?? { rolls: 0, claims: 0, keys: 0 },
     log: (raw.log as LogLine[]) ?? [],
     current: null,
