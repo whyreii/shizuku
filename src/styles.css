@@ -9698,3 +9698,219 @@ kbd {
 .medal-wall {
   padding-inline: 22px;
 }
+/* ==================================================================
+   B1: motion - the reveal beats, the one-shot sparks, the three rings
+   ------------------------------------------------------------------
+   Tokens live in src/tokens.css. Per-tier timing follows HERO_SPECS 2:
+   the turn is the tier's own length, the fade is a fixed 180ms, and the
+   specular, sparkles and stamp all start when the turn ends.
+   ================================================================== */
+
+.reveal-d,
+.reveal-c {
+  --turn: 220ms;
+  --total: 420ms;
+}
+
+.reveal-a,
+.reveal-b {
+  --turn: 260ms;
+  --total: 600ms;
+}
+
+.reveal-s {
+  --turn: 300ms;
+  --total: 760ms;
+}
+
+.reveal-sp {
+  --turn: 340ms;
+  --total: 900ms;
+}
+
+/* the turn is the card's own; the fade is a fixed beat on the inner pane, so
+   a C still settles in 420ms while an S+ keeps turning for 340 */
+.reveal {
+  animation: reveal-turn var(--turn, 220ms) var(--ease-turn) both;
+}
+
+.reveal .card3d-inner {
+  animation: reveal-fade var(--t-beat) linear both;
+}
+
+@keyframes reveal-turn {
+  from {
+    transform: rotateX(var(--rx)) rotateY(calc(var(--ry) + 40deg)) scale(0.97);
+  }
+  to {
+    transform: rotateX(var(--rx)) rotateY(var(--ry)) scale(1);
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* specular: one pass on S+ and S, starting where the turn ends */
+@media (prefers-reduced-motion: no-preference) {
+  .card3d.tier-sp .card3d-inner::after {
+    --sweep: 380ms;
+    animation: foil-sweep var(--sweep) var(--ease-out) var(--turn) 1 forwards;
+  }
+
+  .card3d.tier-s .card3d-inner::after {
+    --sweep: 300ms;
+    animation: foil-sweep var(--sweep) var(--ease-out) var(--turn) 1 forwards;
+  }
+}
+
+/* sparkles: five, 60ms apart, one pass - not a loop */
+.card-sparkles i {
+  animation: sparkle-once 320ms var(--ease-out) both;
+}
+
+.card-sparkles i:nth-child(1) {
+  animation-delay: var(--turn);
+}
+.card-sparkles i:nth-child(2) {
+  animation-delay: calc(var(--turn) + 60ms);
+}
+.card-sparkles i:nth-child(3) {
+  animation-delay: calc(var(--turn) + 120ms);
+}
+.card-sparkles i:nth-child(4) {
+  animation-delay: calc(var(--turn) + 180ms);
+}
+.card-sparkles i:nth-child(5) {
+  animation-delay: calc(var(--turn) + 240ms);
+}
+
+@keyframes sparkle-once {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  35% {
+    opacity: 0.9;
+    transform: scale(1) rotate(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6) rotate(40deg);
+  }
+}
+
+/* the tier stamp lands after the turn, on the tiers that can carry it */
+.card3d.tier-sp .tier-chip,
+.card3d.tier-s .tier-chip {
+  animation:
+    chip-stamp var(--t-settle) var(--ease-stamp) calc(var(--turn) + 220ms) both,
+    chip-ring var(--t-settle) var(--ease-out) calc(var(--turn) + 220ms) both;
+}
+
+@keyframes chip-stamp {
+  from {
+    transform: rotate(-4deg) scale(0.92);
+  }
+  to {
+    transform: rotate(-4deg) scale(1);
+  }
+}
+
+@keyframes chip-ring {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--tier) 55%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+
+/* one-shot rings: the roll key, the claim stamp corner, a bought perk */
+.roll-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  border: 2px solid rgba(154, 217, 255, 0.6);
+  pointer-events: none;
+  animation: ring-pop var(--t-settle) var(--ease-out) both;
+}
+
+/* the wrapper is exactly the card's box, so the ring lands on its corner */
+.hero-card {
+  position: relative;
+}
+
+.claim-ring {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(247, 198, 103, 0.75);
+  pointer-events: none;
+  animation: ring-out 220ms var(--ease-out) both;
+}
+
+.perk-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(247, 198, 103, 0.6);
+  pointer-events: none;
+  animation: ring-out var(--t-beat) var(--ease-out) both;
+}
+
+@keyframes ring-pop {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes ring-out {
+  from {
+    opacity: 0.6;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+/* reduced motion: one 120ms fade, no turn, no sweep, no sparks, chip instant */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+  }
+
+  .reveal .card3d-inner {
+    animation: reveal-fade 120ms linear both;
+  }
+
+  .card-sparkles {
+    display: none;
+  }
+
+  .card3d.tier-sp .card3d-inner::after,
+  .card3d.tier-s .card3d-inner::after,
+  .card3d.tier-sp .tier-chip,
+  .card3d.tier-s .tier-chip {
+    animation: none;
+  }
+}

@@ -78,6 +78,8 @@ export default function App() {
   const [tab, setTab] = useState<Tab>("Album");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [rolling, setRolling] = useState(false);
+  const [rollPulse, setRollPulse] = useState(0);
+  const [claimPulse, setClaimPulse] = useState(0);
   const [keyCue, setKeyCue] = useState(false);
   const [pendingSave, setPendingSave] = useState<File | null>(null);
   const [boardOpen, setBoardOpen] = useState(false);
@@ -89,6 +91,12 @@ const fileRef = useRef<HTMLInputElement>(null);
   const doRoll = () => {
     if (rolling || state.rolls < 1) return;
     setRolling(true);
+    setRollPulse((n) => n + 1);
+    // reduced motion: no swap delay, no lock - the card is just there
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const swap = still ? 0 : 140;
+    const unlock = still ? 0 : 300;
+    // 140ms: the old card is out and the new one mounts (hero spec 2)
     window.setTimeout(() => {
       act((s, t) => {
         const result = roll(s, t);
@@ -98,15 +106,19 @@ const fileRef = useRef<HTMLInputElement>(null);
         }
         return result.state;
       });
-      setRolling(false);
-    }, 260);
+    }, swap);
+    // 300ms: ROLL is free again, before any tier has finished revealing
+    window.setTimeout(() => setRolling(false), unlock);
   };
 
   const doClaim = () => {
     if (!current) return;
     const value = rankValue(current.rank);
     const next = act((s, t) => claim(s, t));
-    if (next) notify(`Claimed · +${formatKakera(value)} value`, "good");
+    if (next) {
+      setClaimPulse((n) => n + 1);
+      notify(`Claimed · +${formatKakera(value)} value`, "good");
+    }
   };
 
 
@@ -300,18 +312,23 @@ const fileRef = useRef<HTMLInputElement>(null);
         <div className="col-stage">
         {current ? (
           <div className={`hero ${windowOpen ? "live" : ""} ${rolling ? "rolling" : ""} ${top3 ? "is-top3" : ""}`}>
-            <Card3D
-              character={current}
-              alias={state.overrides[current.id]?.alias}
-              keys={keysFor(state, current.id)}
-              keyCap={keyCap(state)}
-              owned={owned}
-              wished={state.wishes.includes(current.id)}
-              starwish={state.starwish === current.id}
-              soulmate={state.soulmateId === current.id}
-              revealKey={`${current.id}-${state.current?.rolledAt ?? 0}`}
-              onActivate={canClaim ? doClaim : undefined}
-            />
+            <div className="hero-card">
+              <Card3D
+                character={current}
+                alias={state.overrides[current.id]?.alias}
+                keys={keysFor(state, current.id)}
+                keyCap={keyCap(state)}
+                owned={owned}
+                wished={state.wishes.includes(current.id)}
+                starwish={state.starwish === current.id}
+                soulmate={state.soulmateId === current.id}
+                revealKey={`${current.id}-${state.current?.rolledAt ?? 0}`}
+                onActivate={canClaim ? doClaim : undefined}
+              />
+              {claimPulse > 0 ? (
+                <span className="claim-ring" key={claimPulse} aria-hidden="true" />
+              ) : null}
+            </div>
 
             {state.crystal && crystalAlive > 0 ? (
               <button
@@ -375,6 +392,9 @@ const fileRef = useRef<HTMLInputElement>(null);
           disabled={state.rolls < 1}
           aria-describedby={rollHint ? "roll-hint" : undefined}
         >
+          {rollPulse > 0 ? (
+            <span className="roll-ring" key={rollPulse} aria-hidden="true" />
+          ) : null}
           <span className="roll-key-label">Roll</span>
           {rollHint ? (
             <span className="tip" role="tooltip" id="roll-hint">

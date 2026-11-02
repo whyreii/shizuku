@@ -35,6 +35,7 @@ export function TowerPanel({ state, act }: Props) {
   // the tab never pours; only a rise in floors does.
   const seenFloors = useRef(state.tower.floors);
   const [pour, setPour] = useState<{ key: number; fall: number } | null>(null);
+  const [bought, setBought] = useState<{ id: number; n: number } | null>(null);
 
   useEffect(() => {
     const floors = state.tower.floors;
@@ -134,7 +135,10 @@ export function TowerPanel({ state, act }: Props) {
                 blocked ? " spent" : ""
               }${poor ? " poor" : ""}${canBuild && !poor ? " can" : ""}`}
               disabled={blocked || poor}
-              onClick={() => act((s) => buildFloor(s, perk.id))}
+              onClick={() => {
+                setBought((b) => ({ id: perk.id, n: (b?.n ?? 0) + 1 }));
+                act((s) => buildFloor(s, perk.id));
+              }}
               title={
                 blocked
                   ? "Already built in this fountain"
@@ -143,6 +147,9 @@ export function TowerPanel({ state, act }: Props) {
                     : `Build for ${formatKakera(cost)}`
               }
             >
+              {bought && bought.id === perk.id ? (
+                <span className="perk-ring" key={bought.n} aria-hidden="true" />
+              ) : null}
               <span className="perk-num">{perk.id}</span>
               <span className="perk-label">{perk.label}</span>
               <span className="perk-blurb">{perk.blurb}</span>

@@ -1,0 +1,11 @@
+/* Motion tokens — the one place easing and beat lengths are named.
+   Imported before styles.css in main.tsx, so every rule can read them. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-turn: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --t-fast: 120ms;
+  --t-beat: 180ms;
+  --t-settle: 260ms;
+}
