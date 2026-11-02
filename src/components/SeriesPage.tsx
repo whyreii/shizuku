@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CharacterSheet } from "./CharacterSheet";
 import { useConfirm } from "./useConfirm";
 import { Icon } from "./Icon";
@@ -35,6 +35,11 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("rank");
+  const [limit, setLimit] = useState(180);
+
+  useEffect(() => {
+    setLimit(180);
+  }, [filter, query, sort]);
 
   const chars = useMemo(
     () => ROSTER.filter((c) => c.series === series).sort((a, b) => a.rank - b.rank),
@@ -148,17 +153,19 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
       <div className="series-page-head">
         <div className="series-page-titlerow">
           <div className="series-page-titles">
-            <h2 className="series-page-title">{titleCase(series)}</h2>
-            <p className="series-page-meta">
-              <b>{owned.length}</b> / {chars.length} collected
-              <i />
-              {counts.missing} missing
-              <i />
-              {formatKakera(
-                owned.reduce((sum, c) => sum + rankValue(c.rank), 0),
-              )}{" "}
-              value
-            </p>
+            <div className="series-titleline">
+              <h2 className="series-page-title">{titleCase(series)}</h2>
+              <p className="series-page-meta">
+                <b>{owned.length}</b> / {chars.length} collected
+                <i />
+                {counts.missing} missing
+                <i />
+                {formatKakera(
+                  owned.reduce((sum, c) => sum + rankValue(c.rank), 0),
+                )}{" "}
+                value
+              </p>
+            </div>
           </div>
 
           <button
@@ -213,7 +220,7 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
         <p className="empty series-none">nothing here</p>
       ) : (
         <div className="series-gallery">
-          {shown.map((char) => {
+          {shown.slice(0, limit).map((char) => {
             const isOwned = Boolean(state.owned[char.id]);
             return (
               <SeriesCard
@@ -232,6 +239,16 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
           })}
         </div>
       )}
+
+      {shown.length > limit ? (
+        <button
+          type="button"
+          className="series-more"
+          onClick={() => setLimit((n) => n + 180)}
+        >
+          show more · {shown.length - limit} left
+        </button>
+      ) : null}
 
       <div className="series-page-foot">
         <span className="series-page-wishes">
