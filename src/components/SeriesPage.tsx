@@ -147,9 +147,6 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
     <div className="series-page">
       <div className="series-page-head">
         <div className="series-page-titlerow">
-          <button type="button" className="series-back" onClick={onBack}>
-            series
-          </button>
           <div className="series-page-titles">
             <h2 className="series-page-title">{titleCase(series)}</h2>
             <p className="series-page-meta">
@@ -163,6 +160,16 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
               value
             </p>
           </div>
+
+          <button
+            type="button"
+            className="series-back"
+            aria-label="back to every series"
+            title="back to every series"
+            onClick={onBack}
+          >
+            <Icon name="back" size={15} />
+          </button>
         </div>
 
         <div className="series-tools">
@@ -253,8 +260,8 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
           wish selected ({selected.length})
         </button>
 
-        <button type="button" className="series-back" onClick={onBack}>
-          back
+        <button type="button" className="series-back-link" onClick={onBack}>
+          back to series
         </button>
       </div>
 
