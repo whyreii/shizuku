@@ -66,9 +66,12 @@ Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1)
 
 **Hand:** "carved ice" — 1.5px weight, **flat-cut (butt) terminals**, **45° chamfers** (1.8 units on the 24 grid, echoing the panel's 8px chamfer), and **one filled facet at 30% opacity per glyph**. No round caps, no mixed weights. Medal glyphs run at ~60px in the app and may be richer; the 16px gate applies to rail, header and action icons.
 
-**Rail:** variant **B, no dot**. The active icon is lit in its own syrup, plus the 2px bar.
+**Rail:** variant **B, no dot**; the active icon is lit, plus the 2px bar. The tint rule is **pending**: both were rendered and are on the sheet.
 
-| Tab | Tint |
+- **T · per-tab syrup**: each tab lit in its own syrup. Risk: four of those reuse tier hues — Wishes yuzu = S+, Medals grape = S, Fountain melon = B, Loot plum = C — so a tinted rail icon can read as a tier stamp next to a card.
+- **A · one accent (recommended)**: every active tab lit in frost `#9ad9ff`. The tint stays on the card frame, not the navigation.
+
+| Tab | Tint under T |
 |---|---|
 | Album | ramune `#8cc8ff` |
 | Wishes | yuzu `#e4f0a8` |
@@ -78,7 +81,7 @@ Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1)
 | Series | slush `#9fb2c2` (lifted for 20px) |
 | Ripples | frost `#9ad9ff` |
 
-**Contact sheet gate:** round 2 (revised after review) authored in `src/iconDrafts.tsx` (not wired), rendered at **16 / 24 / 48px on ink and on frost**, plus rail variant B: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
+**Contact sheet gate:** round 3 — `loot`, `fountain`, `wishes`, `series` and `gear` redrawn; rendered at **16 / 24 / 48px on ink and on frost**, plus the 20px rail under both tint rules: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
 
 ![icon contact sheet](icon-contact-sheet.png)
 

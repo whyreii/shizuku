@@ -55,9 +55,12 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
   /* falling star with a trail */
   wishes: (
     <>
-      <path d="M16.4 2.8 17.8 6.2 21.2 7.6 17.8 9 16.4 12.4 15 9 11.6 7.6 15 6.2Z" />
-      <path d="M11 12.4 4.8 18.6M8.8 15.6 6 18.4M12.6 14 10.2 16.4" />
-      <path d="M16.4 7.6H11.6l4.8 4.8Z" {...FACET} />
+      <path d="M3.6 4c5.2 2.2 11.6 2.2 16.8 0" />
+      <path d="M12 5.8v1.4" />
+      <path d="M12 6.3 13.2 7.5 12 8.7 10.8 7.5Z" />
+      <path d="M9.6 8.8h4.8v11.6H9.6Z" />
+      <path d="M10.9 11.6h2.2M10.9 13.8h2.2" />
+      <path d="M9.6 15.2h4.8v5.2H9.6Z" {...FACET} />
     </>
   ),
   /* hex medal, face, ribbon */
@@ -72,20 +75,21 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
   /* basin with two jets */
   fountain: (
     <>
-      <path d="M4 11h16l-1.8 8.5H5.8Z" />
-      <path d="M4.4 14.6h15.2" />
-      <path d="M12 11c-2.1-1.9-2.9-4.1-2.3-6.4M12 11c2.1-1.9 2.9-4.1 2.3-6.4" />
-      <path d="M4.6 14.6h14.8l-1.1 4.2H5.7Z" {...FACET} />
+      <path d="M4.6 10.8h14.8l-1.1 3.8H5.7Z" />
+      <path d="M6.8 14.6h10.4l-.9 3.2H7.7Z" />
+      <path d="M12 10.8V5.4" />
+      <path d="M10.4 4.2h3.2" />
+      <path d="M10.6 5.6c-1.9 1.2-2.8 2.7-3.2 4.6M13.4 5.6c1.9 1.2 2.8 2.7 3.2 4.6" />
+      <path d="M5.4 11.8h13.2l-.6 2.2H6Z" {...FACET} />
     </>
   ),
   /* chest with a tilted lid */
   loot: (
     <>
-      <path d="M5 11.2h12.4l1.6 1.6v6.6H5Z" />
-      <path d="M4.2 8.4 18.6 5.8 19.4 9.4 5 12Z" />
-      <path d="M4.2 8.4 18.6 5.8 19.4 9.4 5 12Z" {...FACET} />
-      <path d="M11.2 12.4v2.8" />
-      <path d="M17.4 11.2 19 12.8 19 19.4 17.4 19.4Z" {...FACET} />
+      <path d="M4.6 12.6a7.4 6.2 0 0 1 14.8 0Z" />
+      <path d="M4.6 12.6a7.4 6.2 0 0 1 14.8 0Z" {...FACET} />
+      <path d="M5 12.6h14v5.2l-1.4 1.4H6.4L5 17.8Z" />
+      <path d="M10.6 12.6h2.8v2.8h-2.8Z" />
     </>
   ),
   /* four book spines, one leaning, on a shelf */
@@ -95,9 +99,10 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
       <path d="M8.6 4.6h2.3l.9.9v13H8.6Z" />
       <path d="M8.6 4.6h2.3l.9.9v13H8.6Z" {...FACET} />
       <path d="M12.8 7.6h2.3l.9.9v10H12.8Z" />
-      <path d="M16.6 6.2l2.6.9v11.4l-2.6-.9Z" />
+      <g transform="rotate(15 17.8 18.5)">
+        <path d="M16.6 6h2.4v12.5h-2.4Z" />
+      </g>
       <path d="M3.6 18.5h17" />
-      <path d="M8.6 4.6h2.3l.9.9v1.8H8.6Z" {...FACET} />
     </>
   ),
   /* droplet striking full rings */
@@ -153,9 +158,9 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
   /* cog */
   gear: (
     <>
-      <path d="M9.5 2.6h5l.6 2.4 2.1 1.2 2.4-.6 2.5 4.3-1.8 1.7v2.4l1.8 1.7-2.5 4.3-2.4-.6-2.1 1.2-.6 2.4h-5l-.6-2.4-2.1-1.2-2.4.6-2.5-4.3 1.8-1.7v-2.4L2.9 10l2.5-4.3 2.4.6 2.1-1.2Z" />
-      <circle cx="12" cy="12" r="3.2" />
-      <circle cx="12" cy="12" r="3.2" {...FACET} />
+      <path d="M9.89 2.84 14.11 2.84 13.87 5.88 16.36 7.32 18.87 5.59 20.99 9.25 18.24 10.56 18.24 13.44 20.99 14.75 18.87 18.41 16.36 16.68 13.87 18.12 14.11 21.16 9.89 21.16 10.13 18.12 7.64 16.68 5.13 18.41 3.01 14.75 5.76 13.44 5.76 10.56 3.01 9.25 5.13 5.59 7.64 7.32 10.13 5.88Z" />
+      <circle cx="12" cy="12" r="2.9" />
+      <circle cx="12" cy="12" r="2.9" {...FACET} />
     </>
   ),
   /* actions -------------------------------------------------------------- */

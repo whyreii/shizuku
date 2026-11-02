@@ -1,26 +1,16 @@
 ﻿import {
-  DRAFT_ACTIONS,
-  DRAFT_ALL,
-  DRAFT_HEADER,
-  DRAFT_MEDALS,
   DRAFT_RAIL,
   DraftIcon,
   type DraftIconName,
 } from "./iconDrafts";
 
-const GROUP: Record<string, DraftIconName[]> = {
-  rail: DRAFT_RAIL,
-  header: DRAFT_HEADER,
-  action: DRAFT_ACTIONS,
-  medal: DRAFT_MEDALS,
-};
-
-function groupOf(name: DraftIconName): string {
-  for (const [key, list] of Object.entries(GROUP)) {
-    if (list.includes(name)) return key;
-  }
-  return "";
-}
+const CHANGED: DraftIconName[] = [
+  "loot",
+  "fountain",
+  "wishes",
+  "series",
+  "gear",
+];
 
 const RAIL_TINT: Record<string, string> = {
   album: "#8cc8ff",
@@ -31,6 +21,8 @@ const RAIL_TINT: Record<string, string> = {
   series: "#9fb2c2",
   ripples: "#9ad9ff",
 };
+
+const ACCENT = "#9ad9ff";
 
 const CSS = `
 .pi { min-height: 100vh; background: #07080a; color: #e9eef5; font: 13px/1.4 system-ui, sans-serif; padding: 26px 30px 40px; }
@@ -47,16 +39,16 @@ const CSS = `
 .pi .pi-sizes span { display: flex; align-items: flex-end; }
 .pi .pi-name { margin-top: 8px; font-size: 12px; color: #cdd9e5; }
 .pi .pi-cat { font-size: 10.5px; color: #7f8f9f; }
-.pi .pi-railrow { display: flex; gap: 26px; align-items: flex-start; }
-.pi .pi-railbox { width: 300px; border-radius: 12px; padding: 10px 8px 12px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+.pi .pi-railrow { display: flex; gap: 26px; align-items: flex-start; flex-wrap: wrap; }
+.pi .pi-railbox { width: 260px; border-radius: 12px; padding: 10px 8px 12px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
 .pi .pi-railcap { font-size: 11px; color: #93a1b1; padding: 4px 8px 8px; }
 .pi .pi-railitem { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 2px 7px; color: #a6b9cc; font-size: 11px; }
 .pi .pi-railitem.on { color: #eef4fb; }
 .pi .pi-railitem.on::before { content:""; position:absolute; left:-6px; top:50%; width:2px; height:22px; margin-top:-11px; border-radius:2px; background:#9ad9ff; box-shadow: 0 0 12px rgba(154,217,255,.8); }
-.pi .pi-tints { display: flex; gap: 14px; flex-wrap: wrap; }
+.pi .pi-tints { display: flex; gap: 12px; flex-wrap: wrap; }
 .pi .pi-tint { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: #a6b9cc; padding: 8px 10px; border-radius: 9px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
-.pi .pi-zoombar { display: flex; align-items: center; gap: 10px; margin-top: 12px; color: #7f8f9f; font-size: 11px; }
-.pi .pi-zoombar b { color: #cdd9e5; font-weight: 500; }
+.pi .pi-note { width: 320px; font-size: 11.5px; line-height: 1.6; color: #93a1b1; padding: 8px 10px; }
+.pi .pi-note b { color: #cdd9e5; font-weight: 500; }
 `;
 
 function Card({ name, tone }: { name: DraftIconName; tone: "ink" | "frost" }) {
@@ -68,20 +60,23 @@ function Card({ name, tone }: { name: DraftIconName; tone: "ink" | "frost" }) {
         <span><DraftIcon name={name} size={48} /></span>
       </div>
       <div className="pi-name">{name}</div>
-      <div className="pi-cat">{groupOf(name)}</div>
+      <div className="pi-cat">changed</div>
     </div>
   );
 }
 
-function Rail() {
+function Rail({ mode }: { mode: "tabs" | "accent" }) {
   return (
     <div className="pi-railbox">
-      <div className="pi-railcap">Final · active icon lit in its syrup, 2px bar, no dot</div>
+      <div className="pi-railcap">
+        {mode === "tabs" ? "T · per-tab syrup tints" : "A · one accent for every active tab"}
+      </div>
       {DRAFT_RAIL.map((name) => {
         const active = name === "fountain";
+        const tint = mode === "tabs" ? RAIL_TINT[name] : ACCENT;
         return (
           <div key={name} className={active ? "pi-railitem on" : "pi-railitem"}>
-            <span style={{ color: active ? RAIL_TINT[name] : undefined, display: "grid" }}>
+            <span style={{ color: active ? tint : undefined, display: "grid" }}>
               <DraftIcon name={name} size={20} />
             </span>
             {name}
@@ -96,16 +91,16 @@ export default function PreviewIcons() {
   return (
     <div className="pi">
       <style>{CSS}</style>
-      <h1>Shizuku — icon contact sheet</h1>
+      <h1>Shizuku — icon contact sheet · round 3</h1>
       <div className="pi-sub">
-        carved ice · 1.5 stroke · butt terminals · 45° chamfers · one 30% facet per
-        glyph · not wired into Icon.tsx · 16 / 24 / 48 px
+        five revised glyphs · 16 / 24 / 48 px on ink and frost · rail tint options ·
+        not wired into Icon.tsx
       </div>
 
       <h2>On ink (#0b0c0b)</h2>
       <div className="pi-sheet ink">
         <div className="pi-grid">
-          {DRAFT_ALL.map((name) => (
+          {CHANGED.map((name) => (
             <Card key={name} name={name} tone="ink" />
           ))}
         </div>
@@ -114,30 +109,29 @@ export default function PreviewIcons() {
       <h2>On frost</h2>
       <div className="pi-sheet frost">
         <div className="pi-grid">
-          {DRAFT_ALL.map((name) => (
+          {CHANGED.map((name) => (
             <Card key={name} name={name} tone="frost" />
           ))}
         </div>
       </div>
 
-      <h2>Rail · active tint per tab</h2>
+      <h2>Rail · 20px, same active tab (Fountain) under both tint rules</h2>
       <div className="pi-railrow">
-        <Rail />
-        <div style={{ flex: 1 }}>
-          <div className="pi-tints">
-            {DRAFT_RAIL.map((name) => (
-              <div key={name} className="pi-tint">
-                <span style={{ color: RAIL_TINT[name], display: "grid" }}>
-                  <DraftIcon name={name} size={20} />
-                </span>
-                {name}
-              </div>
-            ))}
-          </div>
-          <div className="pi-zoombar" style={{ marginTop: 16 }}>
-            <b>16px is the gate</b> for rail/header/action icons. Medal glyphs run at
-            ~60px in the app, so their 16px column is a stress test only.
-          </div>
+        <Rail mode="tabs" />
+        <Rail mode="accent" />
+        <div className="pi-note">
+          <b>Risk, stated plainly:</b> four tab tints reuse tier hues — Wishes
+          <span style={{ color: RAIL_TINT.wishes }}> yuzu</span> is S+, Medals
+          <span style={{ color: RAIL_TINT.medals }}> grape</span> is S, Fountain
+          <span style={{ color: RAIL_TINT.fountain }}> melon</span> is B, Loot
+          <span style={{ color: RAIL_TINT.loot }}> plum</span> is C. A tinted rail icon can
+          read as a tier stamp, especially next to an S-tier card.
+          <br /><br />
+          <b>Recommendation:</b> one accent (frost) for every active tab. The tint
+          belongs to the card frame, not the navigation.
+          <br /><br />
+          <b>Facet audit:</b> 23/23 glyphs carry one 30% facet. In these five:
+          chest lid, basin water, tanzaku strip, middle book, gear hub.
         </div>
       </div>
     </div>
