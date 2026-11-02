@@ -219,7 +219,7 @@ export function CollectionView({ state, act, actUndo, onClose }: Props) {
               <span>shards</span>
             </div>
             {rows.length === 0 ? (
-              <p className="empty">Nothing matches.</p>
+              <p className="empty">no match</p>
             ) : (
               <>
                 <div style={{ height: windowed.padTop }} />
@@ -238,7 +238,7 @@ export function CollectionView({ state, act, actUndo, onClose }: Props) {
         ) : (
           <div className="tile-grid tile-shelf">
             {rows.length === 0 ? (
-              <p className="empty">Nothing matches.</p>
+              <p className="empty">no match</p>
             ) : (
               rows.map((char) => (
                 <Tile

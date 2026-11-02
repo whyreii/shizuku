@@ -117,7 +117,7 @@ const fileRef = useRef<HTMLInputElement>(null);
     const next = act((s, t) => claim(s, t));
     if (next) {
       setClaimPulse((n) => n + 1);
-      notify(`Claimed · +${formatKakera(value)} value`, "good");
+      notify(`claimed · +${formatKakera(value)} value`, "good");
     }
   };
 
@@ -179,7 +179,7 @@ const fileRef = useRef<HTMLInputElement>(null);
     link.download = "shizuku-save.json";
     link.click();
     URL.revokeObjectURL(url);
-    notify("Save exported", "good");
+    notify("save exported", "good");
   };
 
   const importSave = async (file: File) => {
@@ -195,7 +195,7 @@ const fileRef = useRef<HTMLInputElement>(null);
         throw new Error("missing keys");
       }
       restore(hydrate(parsed));
-      notify("Save imported", "good");
+      notify("save imported", "good");
       setSettingsOpen(false);
     } catch {
       notify("That file isn't a Shizuku save", "warn");
@@ -369,7 +369,7 @@ const fileRef = useRef<HTMLInputElement>(null);
             <div className="rest-card" aria-hidden="true">
               <CardBackArt />
             </div>
-            <p className="rest-note">roll to draw</p>
+            <p className="rest-note">nothing drawn yet</p>
           </div>
         )}
 
@@ -481,7 +481,7 @@ const fileRef = useRef<HTMLInputElement>(null);
       {settingsOpen ? (
         <Modal
           title="Settings"
-          subtitle="yours only, saved locally"
+          subtitle="this browser only"
           onClose={() => setSettingsOpen(false)}
           footer={
             <button className="link" onClick={() => setSettingsOpen(false)}>
@@ -576,7 +576,7 @@ const fileRef = useRef<HTMLInputElement>(null);
           </p>
 
           <details className="help-block">
-            <summary>how it works</summary>
+            <summary>the rules</summary>
             {sections(state).map((section) => (
               <div className="help-section" key={section.title}>
                 <b>{section.title}</b>

@@ -184,7 +184,7 @@ export function TowerPanel({ state, act }: Props) {
             })
           }
         >
-          drain fountain · refund {formatKakera(state.tower.spent)}
+          drain · {formatKakera(state.tower.spent)} back
         </button>
       ) : null}
 

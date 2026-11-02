@@ -97,7 +97,7 @@ export function BadgesPanel({ state, act }: Props) {
               <b className="medal-name">{def.label}</b>
               <span className="medal-price">
                 {maxed ? (
-                  "maxed"
+                  "full"
                 ) : lock ? (
                   "locked"
                 ) : (
@@ -161,7 +161,7 @@ export function BadgesPanel({ state, act }: Props) {
                 }}
               >
                 {selectedLevel >= 4
-                  ? "Maxed"
+                  ? "full"
                   : `Buy · ${formatKakera(selectedPrice)}`}
               </button>
             </>

@@ -66,7 +66,7 @@ export function CollectionPanel({
 
 
   if (owned.length === 0) {
-    return <p className="empty">No cards claimed yet.</p>;
+    return <p className="empty">no claims yet</p>;
   }
 
   return (
@@ -129,7 +129,7 @@ export function CollectionPanel({
 
       <div className='tile-grid tile-shelf'>
         {rows.length === 0 ? (
-          <p className='empty'>Nothing matches.</p>
+          <p className='empty'>no match</p>
         ) : (
           rows.map((c) => (
             <Tile
@@ -221,7 +221,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
               onConfirm: () => act((s) => toggleStarwish(s, star.id)),
             });
           }}
-          title={star ? `${star.name} · clear starwish` : "No starwish set"}
+          title={star ? `${star.name} · clear starwish` : "no starwish"}
         >
           {star ? (
             <>
@@ -259,7 +259,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
         <div className="wish-empty">
           <PlinthArt />
           <span>the plinth is empty</span>
-          <p>Wish a character from the series browser and it lands here.</p>
+          <p>pick one in series — it takes the stand</p>
         </div>
       ) : null}
 
@@ -387,7 +387,7 @@ export function SeriesPanel({
 
       <div className="series-wall">
         {rows.length === 0 ? (
-          <p className="empty">Nothing matches.</p>
+          <p className="empty">no match</p>
         ) : (
           rows.slice(0, 120).map((row) => {
             const owned = ownedBySeries.get(row.series) ?? 0;
@@ -529,7 +529,7 @@ export function LogPanel({ state }: PanelProps) {
 
       <div className="ripples">
         {state.log.length === 0 ? (
-          <p className="empty">Nothing yet.</p>
+          <p className="empty">nothing yet</p>
         ) : (
           groupByDay(state.log).map((group) => (
             <div className="day-group" key={group.key}>

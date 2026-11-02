@@ -36,7 +36,7 @@ export function LootPanel({ state, act }: Props) {
           <Icon name="loot" size={38} />
           <span className="loot-lock">
             <b>Sealed</b>
-            <i>turn each of these medals once</i>
+            <i>raise Frost, Blizzard and Glacier to Lv 1</i>
           </span>
           <ul className="loot-req">
             {(["sapphire", "ruby", "emerald"] as const).map((key) => (
@@ -93,7 +93,7 @@ export function LootPanel({ state, act }: Props) {
           ))}
         </div>
       ) : (
-        <p className="loot-empty">Nothing opened yet.</p>
+        <p className="loot-empty">nothing pulled yet</p>
       )}
     </div>
   );
