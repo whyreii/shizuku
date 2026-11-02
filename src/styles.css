@@ -9222,10 +9222,9 @@ kbd {
   --inner-top-c: color-mix(in srgb, var(--tier-c) 34%, transparent);
 }
 
-/* D slush plain: no edge, 2px neutral line at the base */
+/* D slush plain: no edge and no base line; the keyline is the only frame */
 .card3d.tier-d {
-  --inner-bottom: 2px;
-  --inner-bottom-c: #2a2e2a;
+  --inner-bottom: 0px;
 }
 
 /* 2C-b: the band read as a heavy rim at 168-288px. Back to hairlines: the
