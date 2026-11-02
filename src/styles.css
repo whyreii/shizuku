@@ -3,22 +3,27 @@
    ------------------------------------------------------------------ */
 
 :root {
-  --ink: #0a0d12;
-  --paper: #eef4fb;
+  --ink: #0b0c0b;
+  --paper: #e9efe6;
   --muted: #a6b9cc;
-  --line: #1d2734;
-  --line-soft: #151d27;
-  --line-hi: #2b3d55;
+  --line: #2a2e2a;
+  --line-soft: #1b1e1b;
+  --line-hi: #3a403a;
   --frost: #9ad9ff;
   --signal: #ff6b93;
   --good: #6fe3b4;
 
-  --tier-sp: #ffd98a;
+  /* 2B materials */
+  --panel: #141614;
+  --raised: #1e211e;
+  --grain: url("/frost-grain.png");
+
+  --tier-sp: #e4f0a8;
   --tier-s: #c3a8ff;
   --tier-a: #8cc8ff;
   --tier-b: #6fe3b4;
-  --tier-c: #93a6ba;
-  --tier-d: #62717f;
+  --tier-c: #b98bb8;
+  --tier-d: #7a8c9c;
 
   --serif: "Instrument Serif", Georgia, serif;
   --ui: "Archivo", "Segoe UI", system-ui, sans-serif;
@@ -1099,8 +1104,7 @@ textarea:focus {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(4, 7, 11, 0.72);
-  backdrop-filter: blur(6px);
+  background: rgba(7, 8, 7, 0.86);
   animation: fade 0.16s ease;
 }
 
@@ -2588,7 +2592,6 @@ textarea:focus {
   background-size: 220% 100%, 100% 100%;
   background-repeat: no-repeat;
   background-position: -140% 0, 0 0;
-  backdrop-filter: blur(8px);
   color: var(--muted);
   font-family: var(--serif);
   font-size: 18px;
@@ -8288,4 +8291,220 @@ kbd {
   letter-spacing: 0.04em;
   text-transform: none;
   color: var(--paper);
+}
+
+/* ==================================================================
+   2B-i: foundation - palette A, three materials, texture
+   ================================================================== */
+
+/* frosted panel: one cut corner, a frost edge, a grain film, no ring */
+.modal {
+  background-color: var(--panel);
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 42%);
+  background-size: 64px 64px, auto;
+  background-repeat: repeat, no-repeat;
+  border: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* frosted cards: the same cut, edge and grain */
+.series-card,
+.wish-card {
+  background-color: var(--panel);
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 45%);
+  background-size: 64px 64px, auto;
+  background-repeat: repeat, no-repeat;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* the cut clips outlines, so the ring moves inside */
+.series-card:focus-visible,
+.wish-card:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 0 0 2px var(--frost),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* frosted rows and tiles: edge + grain, no cut (they are not panels) */
+.ripple,
+.perk-tile {
+  position: relative;
+}
+
+.ripple {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.ripple::after,
+.perk-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--grain);
+  background-size: 64px 64px;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+/* etched: debossed, matte, darker than its surround */
+.wish-slot {
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.basin-shell {
+  background-color: #0a0d0a;
+  background-image:
+    radial-gradient(120% 70% at 50% 0%, rgba(154, 217, 255, 0.08), transparent 62%),
+    linear-gradient(180deg, #0a0d0a, #070908);
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.65),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.album-tools input,
+.gallery-add input,
+.panel input[placeholder] {
+  background: #0d100d;
+  box-shadow:
+    inset 0 2px 7px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.roll-key:disabled {
+  background: linear-gradient(180deg, #121512, #0b0d0b);
+  color: #b9c4b9;
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.roll-key:disabled .roll-key-label {
+  opacity: 0.85;
+}
+
+/* gold hardware: hard edge, no warm glow */
+.roll-key {
+  box-shadow:
+    0 5px 0 #8a6420,
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* base surface tint behind art and chips */
+.tile-art {
+  background-color: var(--panel);
+  border-color: #222622;
+}
+
+.series-cover,
+.wish-item .cardface {
+  background-color: var(--panel);
+}
+
+/* 2B: the card backs and empty slots leave navy */
+.rest-card {
+  background:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.04) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(165deg, #1a1e1a, #0d100d 58%, #070907);
+}
+
+.tile-art.is-back,
+.recent-thumb.is-back {
+  background:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.045) 0 1px,
+      transparent 1px 8px
+    ),
+    radial-gradient(
+      120% 90% at 50% 0%,
+      color-mix(in srgb, var(--tier, #2b3d55) 46%, transparent),
+      transparent 64%
+    ),
+    linear-gradient(165deg, #1a1e1a, #0d100d 58%, #070907);
+}
+
+.series-cover.is-back,
+.cardface.is-back {
+  background:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.04) 0 1px,
+      transparent 1px 8px
+    ),
+    linear-gradient(165deg, #1a1e1a, #0d100d 58%, #070907);
+}
+
+.wish-slot {
+  background:
+    repeating-linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0.022) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(165deg, #1a1e1a, #0d100d);
+}
+
+/* the sheet footer must not wrap its buttons; divorce takes its own row */
+.modal-foot {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.modal-foot .link,
+.modal-foot .btn {
+  white-space: nowrap;
+}
+
+.modal-foot .link.danger-text {
+  flex: 1 0 100%;
+  margin-left: 0;
+  padding: 4px 2px 0;
+  text-align: right;
+}
+
+/* keep the sheet's action row on one line */
+.modal-foot {
+  gap: 8px;
+}
+
+.modal-foot .link {
+  padding: 8px 12px;
+}
+
+.modal-foot .btn.primary {
+  padding: 12px 18px;
+}
+
+/* 2B: the bespoke containers keep the new base until their rebuild */
+.loot-box {
+  background: linear-gradient(165deg, #1e211e 0%, #0d100d 62%, #141614 100%);
+}
+
+.loot-box.is-locked {
+  background: linear-gradient(165deg, #171a17, #0a0d0a);
+}
+
+.basin {
+  background: linear-gradient(180deg, var(--panel), #0a0d0a);
 }
