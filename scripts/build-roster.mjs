@@ -14,7 +14,10 @@ import path from "node:path";
 
 const ENDPOINT = "https://graphql.anilist.co";
 const SERIES_TARGET = Number(process.env.SERIES_TARGET ?? 600);
-const DELAY_MS = 720;
+// AniList allows ~30 requests/min unauthenticated; 720ms trips 429s on a big run.
+const DELAY_MS = Number(process.env.DELAY_MS ?? 2000);
+// skip the 1,000 hand-portrait re-resolution when only the extras pool is growing
+const SKIP_HAND = process.env.SKIP_HAND === "1";
 
 const root = path.resolve(import.meta.dirname, "..");
 const outFile = path.join(root, "public", "roster-extra.json");
@@ -156,7 +159,7 @@ async function main() {
 
   const cache = await loadCache();
 
-  if (cache.media.length === 0) {
+  if (cache.media.length < SERIES_TARGET) {
     console.log("fetching series by popularity…");
     cache.media = await fetchSeries();
     await saveCache(cache);
@@ -195,7 +198,7 @@ async function main() {
   console.log("resolving hand-ranked portraits…");
   const imageMap = {};
   const handNames = hand.map((entry) => `${entry.name}|${entry.series}`);
-  for (let i = 0; i < hand.length; i += 1) {
+  for (let i = 0; i < (SKIP_HAND ? 0 : hand.length); i += 1) {
     const entry = hand[i];
     const url = await resolveHandImage(entry.name, entry.series);
     if (url) imageMap[handNames[i]] = url;
@@ -205,7 +208,7 @@ async function main() {
     }
     await sleep(DELAY_MS);
   }
-  await writeFile(imageMapFile, JSON.stringify(imageMap));
+  if (!SKIP_HAND) await writeFile(imageMapFile, JSON.stringify(imageMap));
   console.log(`hand portraits resolved: ${Object.keys(imageMap).length}/${hand.length}`);
 
   console.log("merging extras…");
