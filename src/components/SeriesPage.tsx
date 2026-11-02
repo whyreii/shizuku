@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { CharacterSheet } from "./CharacterSheet";
 import { useConfirm } from "./useConfirm";
 import { Icon } from "./Icon";
-import { titleCase } from "./SeriesGrid";
 import { usePortrait } from "../engine/images";
 import {
   divorce,
@@ -14,6 +13,7 @@ import {
 } from "../engine/game";
 import { ROSTER, characterById, rankValue } from "../engine/roster";
 import { tierClass, tierForRank } from "../engine/tiers";
+import { titleCase } from "./SeriesGrid";
 import type { Character, GameState } from "../engine/types";
 
 interface Props {
@@ -24,11 +24,17 @@ interface Props {
   onBack: () => void;
 }
 
+type Filter = "all" | "owned" | "missing" | "wished";
+type Sort = "rank" | "name" | "value";
+
 /** One series, shown as a gallery you can wish and starwish from. */
 export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
   const { ask, dialog } = useConfirm();
   const [selected, setSelected] = useState<string[]>([]);
   const [openChar, setOpenChar] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [sort, setSort] = useState<Sort>("rank");
 
   const chars = useMemo(
     () => ROSTER.filter((c) => c.series === series).sort((a, b) => a.rank - b.rank),
@@ -36,10 +42,43 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
   );
 
   const owned = chars.filter((c) => state.owned[c.id]);
-  const missing = chars.length - owned.length;
-  const value = owned.reduce((sum, c) => sum + rankValue(c.rank), 0);
   const cap = wishCap(state);
   const full = state.wishes.length >= cap;
+
+  const counts = useMemo(
+    () => ({
+      all: chars.length,
+      owned: chars.filter((c) => state.owned[c.id]).length,
+      missing: chars.filter((c) => !state.owned[c.id]).length,
+      wished: chars.filter((c) => state.wishes.includes(c.id)).length,
+    }),
+    [chars, state.owned, state.wishes],
+  );
+
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = chars.filter((c) => {
+      if (filter === "owned" && !state.owned[c.id]) return false;
+      if (filter === "missing" && state.owned[c.id]) return false;
+      if (filter === "wished" && !state.wishes.includes(c.id)) return false;
+      if (!q) return true;
+      const alias = state.overrides[c.id]?.alias ?? "";
+      return (
+        c.name.toLowerCase().includes(q) || alias.toLowerCase().includes(q)
+      );
+    });
+    if (sort === "name") {
+      return [...list].sort((a, b) =>
+        (state.overrides[a.id]?.alias ?? a.name).localeCompare(
+          state.overrides[b.id]?.alias ?? b.name,
+        ),
+      );
+    }
+    if (sort === "value") {
+      return [...list].sort((a, b) => rankValue(b.rank) - rankValue(a.rank));
+    }
+    return list;
+  }, [chars, filter, query, sort, state.owned, state.wishes, state.overrides]);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) =>
@@ -107,48 +146,103 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
   return (
     <div className="series-page">
       <div className="series-page-head">
-        <button type="button" className="series-back" onClick={onBack}>
-          series
-        </button>
-        <div className="series-page-titles">
-          <h2 className="series-page-title">{titleCase(series)}</h2>
-          <p className="series-page-meta">
-            <b>{owned.length}</b> / {chars.length} collected
-            <i />
-            {missing} missing
-            <i />
-            {formatKakera(value)} value
-          </p>
+        <div className="series-page-titlerow">
+          <button type="button" className="series-back" onClick={onBack}>
+            series
+          </button>
+          <div className="series-page-titles">
+            <h2 className="series-page-title">{titleCase(series)}</h2>
+            <p className="series-page-meta">
+              <b>{owned.length}</b> / {chars.length} collected
+              <i />
+              {counts.missing} missing
+              <i />
+              {formatKakera(
+                owned.reduce((sum, c) => sum + rankValue(c.rank), 0),
+              )}{" "}
+              value
+            </p>
+          </div>
+        </div>
+
+        <div className="series-tools">
+          <input
+            className="series-find"
+            placeholder="find in this series"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+
+          <div className="seg series-seg" role="group" aria-label="filter">
+            {(["all", "owned", "missing", "wished"] as Filter[]).map((key) => (
+              <button
+                key={key}
+                type="button"
+                className={filter === key ? "seg-btn on" : "seg-btn"}
+                aria-pressed={filter === key}
+                onClick={() => setFilter(key)}
+              >
+                {key}
+                <i>{counts[key]}</i>
+              </button>
+            ))}
+          </div>
+
+          <label className="series-sort">
+            <span>sort</span>
+            <select
+              value={sort}
+              onChange={(event) => setSort(event.target.value as Sort)}
+            >
+              <option value="rank">rank</option>
+              <option value="name">name</option>
+              <option value="value">value</option>
+            </select>
+          </label>
         </div>
       </div>
 
-      <div className="series-gallery">
-        {chars.map((char) => {
-          const isOwned = Boolean(state.owned[char.id]);
-          const wished = state.wishes.includes(char.id);
-          const starred = state.starwish === char.id;
-          const picked = selected.includes(char.id);
-          return (
-            <SeriesCard
-              key={char.id}
-              char={char}
-              owned={isOwned}
-              wished={wished}
-              starred={starred}
-              picked={picked}
-              alias={state.overrides[char.id]?.alias}
-              keys={keysFor(state, char.id)}
-              onOpen={() => openOrSelect(char)}
-              onStar={() => setStar(char)}
-            />
-          );
-        })}
-      </div>
+      {shown.length === 0 ? (
+        <p className="empty series-none">nothing here</p>
+      ) : (
+        <div className="series-gallery">
+          {shown.map((char) => {
+            const isOwned = Boolean(state.owned[char.id]);
+            return (
+              <SeriesCard
+                key={char.id}
+                char={char}
+                owned={isOwned}
+                wished={state.wishes.includes(char.id)}
+                starred={state.starwish === char.id}
+                picked={selected.includes(char.id)}
+                alias={state.overrides[char.id]?.alias}
+                keys={keysFor(state, char.id)}
+                onOpen={() => openOrSelect(char)}
+                onStar={() => setStar(char)}
+              />
+            );
+          })}
+        </div>
+      )}
 
       <div className="series-page-foot">
         <span className="series-page-wishes">
+          <b>{selected.length}</b> selected
+          <i />
           wishes <b>{state.wishes.length}</b> / {cap}
         </span>
+
+        {selected.length > 0 ? (
+          <button
+            type="button"
+            className="series-clear"
+            onClick={() => setSelected([])}
+          >
+            clear
+          </button>
+        ) : null}
+
         <button
           type="button"
           className="btn primary"
@@ -158,6 +252,7 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
         >
           wish selected ({selected.length})
         </button>
+
         <button type="button" className="series-back" onClick={onBack}>
           back
         </button>
@@ -256,7 +351,13 @@ function SeriesCard({
         type="button"
         className={starred ? "serie-star on" : "serie-star"}
         aria-label={starred ? `clear starwish ${name}` : `starwish ${name}`}
-        title={starred ? "clear starwish" : owned ? "starwish · farm it for shards" : "starwish"}
+        title={
+          starred
+            ? "clear starwish"
+            : owned
+              ? "starwish · farm it for shards"
+              : "starwish"
+        }
         onClick={onStar}
       >
         <Icon name="star" size={13} />

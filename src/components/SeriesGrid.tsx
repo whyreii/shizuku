@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePortrait } from "../engine/images";
 import { ROSTER, seriesIndex } from "../engine/roster";
 import type { Character, GameState } from "../engine/types";
@@ -6,6 +6,8 @@ import type { Character, GameState } from "../engine/types";
 interface Props {
   state: GameState;
   onOpen: (series: string) => void;
+  /** scroll offset to restore when coming back from a series page */
+  initialScroll?: number;
 }
 
 export function titleCase(name: string): string {
@@ -32,8 +34,15 @@ function SeriesCover({ char }: { char: Character | null }) {
 }
 
 /** The series index: a wall of covers. Picking one opens its gallery page. */
-export function SeriesGrid({ state, onOpen }: Props) {
+export function SeriesGrid({ state, onOpen, initialScroll = 0 }: Props) {
   const [query, setQuery] = useState("");
+  const wallRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (wallRef.current) wallRef.current.scrollTop = initialScroll;
+    // only on mount: the wall is remounted each time the page is left
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const rows = useMemo(() => {
     const all = seriesIndex();
@@ -89,7 +98,10 @@ export function SeriesGrid({ state, onOpen }: Props) {
         </div>
       ) : null}
 
-      <div className="series-wall">
+            <div
+        className="series-wall"
+        ref={wallRef}
+      >
         {rows.length === 0 ? (
           <p className="empty">no match</p>
         ) : (

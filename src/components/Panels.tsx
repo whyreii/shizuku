@@ -18,8 +18,7 @@ import { PlinthArt } from "./EmptyArt";
 import { usePortrait } from "../engine/images";
 import { Icon } from "./Icon";
 import { CharacterSheet } from "./CharacterSheet";
-import { SeriesGrid } from "./SeriesGrid";
-import { SeriesPage } from "./SeriesPage";
+import { SeriesBrowser } from "./SeriesBrowser";
 import { Tile } from "./Tile";
 import { useConfirm } from "./useConfirm";
 import type { Character, GameState, SortKey } from "../engine/types";
@@ -460,21 +459,7 @@ export function SeriesPanel({
 }: PanelProps & {
   actUndo?: (fn: (s: GameState, now: number) => GameState, label: string) => GameState | null;
 }) {
-  const [open, setOpen] = useState<string | null>(null);
-
-  if (open) {
-    return (
-      <SeriesPage
-        state={state}
-        series={open}
-        act={act}
-        actUndo={actUndo}
-        onBack={() => setOpen(null)}
-      />
-    );
-  }
-
-  return <SeriesGrid state={state} onOpen={setOpen} />;
+  return <SeriesBrowser state={state} act={act} actUndo={actUndo} />;
 }
 function RippleArt({ char }: { char: Character | null }) {
   const portrait = usePortrait(
