@@ -243,9 +243,6 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
                 soulmate={soulmate}
                 imageOverride={shown}
               />
-              <span className="flip-hint" aria-hidden="true">
-                more pictures
-              </span>
             </div>
             <div className="flip-back" aria-hidden={!flipped}>
               <span className="flip-title">more pictures</span>
@@ -308,17 +305,6 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
                   </button>
                 )
               ) : null}
-              <button
-                type="button"
-                className="link flip-back-btn"
-                tabIndex={flipped ? 0 : -1}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setFlipped(false);
-                }}
-              >
-                flip back
-              </button>
             </div>
           </div>
           {leaving ? (
