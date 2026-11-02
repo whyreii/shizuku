@@ -572,13 +572,13 @@ textarea:focus {
   transform-style: preserve-3d;
 }
 
-/* thin inner outline over the art: the card's edge, no drop shadow */
+/* the thin keyline inside the card, inset from the edge: no drop shadow */
 .card3d::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  inset: 6px;
+  border-radius: 13px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   pointer-events: none;
 }
 
