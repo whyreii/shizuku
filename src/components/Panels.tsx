@@ -10,6 +10,7 @@ import {
 } from "../engine/game";
 import { ROSTER, characterAtRank, characterById, seriesIndex } from "../engine/roster";
 import { tierClass, tierForRank } from "../engine/tiers";
+import { PlinthArt } from "./EmptyArt";
 import { usePortrait } from "../engine/images";
 import { CharacterSheet } from "./CharacterSheet";
 import { SeriesSheet } from "./SeriesSheet";
@@ -256,6 +257,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
 
       {others.length === 0 && !star ? (
         <div className="wish-empty">
+          <PlinthArt />
           <span>the plinth is empty</span>
           <p>Wish a character from the series browser and it lands here.</p>
         </div>

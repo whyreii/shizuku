@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Card3D } from "./components/Card3D";
+import { CardBackArt } from "./components/EmptyArt";
 import {
   CollectionPanel,
   LogPanel,
@@ -349,8 +350,9 @@ const fileRef = useRef<HTMLInputElement>(null);
         ) : (
           <div className="rest">
             <div className="rest-card" aria-hidden="true">
-              <span>roll to draw</span>
+              <CardBackArt />
             </div>
+            <p className="rest-note">roll to draw</p>
           </div>
         )}
 

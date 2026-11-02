@@ -229,8 +229,10 @@ textarea:focus {
 
 .rest {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 14px;
   min-height: 402px;
   padding: 0;
 }
@@ -1009,11 +1011,10 @@ textarea:focus {
 }
 
 .rest-note {
-  font-family: var(--mono);
-  font-size: 8.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--line-hi);
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 
 @keyframes reveal {
@@ -5100,13 +5101,6 @@ kbd {
   place-items: center;
 }
 
-.rest-card span {
-  font-family: "Bakbak One", var(--ui);
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(154, 217, 255, 0.45);
-}
 
 /* ==================================================================
    ripples: a feed of cards, not a table of strings
@@ -9678,4 +9672,23 @@ kbd {
   .panel-grid .drain {
     grid-column: 6 / span 7;
   }
+}
+/* ==================================================================
+   2C-e: the two empty states - authored ink, not a label
+   ================================================================== */
+.rest-art {
+  color: rgba(154, 217, 255, 0.5);
+}
+
+.plinth-art {
+  align-self: center;
+  margin-bottom: 6px;
+  color: rgba(154, 217, 255, 0.5);
+}/* the drawing is the card back, so the slot shrinks to it */
+.rest-card {
+  width: 180px;
+  aspect-ratio: 5 / 7;
+  border: 0;
+  background: none;
+  box-shadow: none;
 }
