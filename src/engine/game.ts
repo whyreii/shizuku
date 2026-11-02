@@ -602,15 +602,16 @@ export function hydrate(raw: Partial<GameState> & Record<string, unknown>): Game
   const base = createInitialState(Date.now());
   const known = new Set(ROSTER.map((c) => c.id));
 
-  const owned: GameState["owned"] = {};
-  for (const [id, record] of Object.entries((raw.owned as GameState["owned"]) ?? {})) {
-    if (known.has(id)) owned[id] = record;
-  }
+  // Cards are never deleted for being unknown to the roster. A slow or failed
+  // roster load used to prune every extra-pool claim from the save; unknown ids
+  // are now kept and simply not rendered until the roster catches up.
+  const owned: GameState["owned"] = {
+    ...((raw.owned as GameState["owned"]) ?? {}),
+  };
 
-  const keys: GameState["keys"] = {};
-  for (const [id, record] of Object.entries((raw.keys as GameState["keys"]) ?? {})) {
-    if (known.has(id)) keys[id] = record;
-  }
+  const keys: GameState["keys"] = {
+    ...((raw.keys as GameState["keys"]) ?? {}),
+  };
 
   const legacyCurrency =
     typeof raw.kakigori === "number"
