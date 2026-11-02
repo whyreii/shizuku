@@ -8558,3 +8558,216 @@ kbd {
 .medal.locked .medal-glyph {
   color: rgba(255, 255, 255, 0.32);
 }
+
+/* ==================================================================
+   2B-iii: the fountain - an etched bowl, gold price plate, frosted perks
+   ================================================================== */
+
+/* the basin is one object on the page, not a box around another box */
+.basin {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* the bowl is cut into the page: shadow at the rim, light at the base */
+.basin-shell {
+  background-color: #080a08;
+  background-image:
+    radial-gradient(120% 70% at 50% 0%, rgba(154, 217, 255, 0.07), transparent 60%),
+    linear-gradient(180deg, #0b0e0b, #060806);
+  box-shadow:
+    inset 0 4px 14px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* water is frost: bright at the surface, deeper below */
+.basin-water {
+  background: linear-gradient(
+    180deg,
+    rgba(154, 217, 255, 0.5) 0%,
+    rgba(120, 190, 235, 0.22) 46%,
+    rgba(90, 150, 190, 0.14) 100%
+  );
+  box-shadow: 0 -1px 0 rgba(214, 240, 255, 0.5);
+}
+
+.basin-water::after {
+  height: 1px;
+  background: rgba(226, 246, 255, 0.85);
+  box-shadow: 0 0 7px rgba(154, 217, 255, 0.4);
+}
+
+.basin-wave {
+  opacity: 0.5;
+}
+
+/* twelve notches: empty is a cut in the rim, full is water */
+.basin-ticks i {
+  height: 5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.basin-ticks i.on {
+  background: linear-gradient(180deg, #cdeeff, #7fc4ea);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+/* the next-basin price is hardware: dark plate, gold engraving, hard base */
+.basin-tag {
+  padding: 3px 10px 4px;
+  border-radius: 3px;
+  background: #101310;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -2px 0 rgba(247, 198, 103, 0.55);
+  color: #f7c667;
+}
+
+/* perks: frosted faces with a top light and a shadow at the base */
+.perk-tile {
+  background-color: var(--panel);
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0) 46%
+  );
+  background-size: auto;
+  background-repeat: no-repeat;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.perk-tile:hover:not(:disabled) {
+  background-color: var(--raised);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* built in an earlier basin: still a face, lit a little from the rim */
+.perk-tile.owned {
+  background-color: #171a17;
+  box-shadow:
+    inset 0 1px 0 rgba(154, 217, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* affordable: gold only on the base edge and the price, never a ring */
+.perk-tile.can {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -2px 0 rgba(247, 198, 103, 0.5);
+}
+
+.perk-tile.can:hover:not(:disabled) {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    inset 0 -2px 0 rgba(247, 198, 103, 0.7);
+}
+
+/* already built here: a spent socket, no grain, no lift */
+.perk-tile.spent {
+  background-color: #0c0f0c;
+  background-image: none;
+  box-shadow:
+    inset 0 3px 9px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.045);
+  opacity: 1;
+  cursor: default;
+}
+
+.perk-tile.spent::after {
+  content: none;
+}
+
+.perk-tile.spent .perk-num {
+  color: rgba(154, 217, 255, 0.32);
+}
+
+.perk-tile.spent .perk-label {
+  color: rgba(233, 239, 230, 0.45);
+}
+
+.perk-tile.spent .perk-blurb {
+  color: rgba(166, 185, 204, 0.34);
+}
+
+.perk-tile.spent .perk-price {
+  color: rgba(166, 185, 204, 0.5);
+}
+
+/* short of the price: readable, but sunk and unresolved */
+.perk-tile.poor {
+  background-color: #101310;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.perk-tile.poor .perk-label {
+  color: rgba(233, 239, 230, 0.6);
+}
+
+.perk-tile.poor .perk-blurb {
+  color: rgba(166, 185, 204, 0.44);
+}
+
+.perk-tile.poor .perk-price {
+  color: rgba(247, 198, 103, 0.45);
+}
+
+.perk-price {
+  font-size: 13px;
+  bottom: 11px;
+}
+
+/* the scrollbar was the last navy chrome on the page */
+* {
+  scrollbar-color: #2a2e2a transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #2a2e2a;
+}
+
+/* 2B-iii corrections */
+
+/* the tag is a plate with a gold base edge, not an outlined field */
+.basin-tag {
+  padding: 3px 10px 5px;
+  border-radius: 2px;
+  background: #141614;
+  box-shadow: inset 0 -2px 0 rgba(247, 198, 103, 0.6);
+  color: #f7c667;
+}
+
+/* one scroll region on desktop: the panel. The plate was capped at 52vh,
+   overflowed its last row by 9px and faded it for no reason. */
+@media (min-width: 1180px) {
+  .panel-grid .perk-grid,
+  .panel-grid .perk-grid.is-scrolling {
+    max-height: none;
+    overflow: visible;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+/* the bowl needs a wall: darker at the rim shadow, light pooled at the floor */
+.basin-shell {
+  background-color: #0a0d0a;
+  background-image:
+    radial-gradient(115% 62% at 50% 100%, rgba(154, 217, 255, 0.09), transparent 62%),
+    linear-gradient(180deg, #11140f 0%, #0a0d0a 32%, #050705 100%);
+  box-shadow:
+    inset 0 10px 22px -6px rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.05);
+}
