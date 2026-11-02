@@ -10383,19 +10383,17 @@ kbd {
   color: var(--tier);
 }
 
-.serie-wished {
+/* the gallery stamp is the card patch, not a second style: same border, same
+   dashed inner line, same tilt, only sized for a 160px card */
+.serie-art .card-flag {
   position: absolute;
-  top: 7px;
-  right: 7px;
+  top: 8px;
+  right: 8px;
   z-index: 2;
-  padding: 1px 6px 2px;
-  border-radius: 3px;
-  background: rgba(11, 12, 11, 0.72);
+  padding: 2px 8px 3px;
   font-family: "Bakbak One", var(--ui);
   font-size: 11px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--frost);
 }
 
 /* the star sits on every card: an owned starwish is how you farm duplicates */

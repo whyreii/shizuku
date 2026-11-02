@@ -364,7 +364,7 @@ function SeriesCard({
           {owned ? (
             <span className={`serie-tier ${tierClass(tier)}`}>{tier}</span>
           ) : null}
-          {wished ? <span className="serie-wished">wish</span> : null}
+          {wished ? <span className="card-flag wish-flag soft">WISH</span> : null}
         </span>
         <span className="serie-name">{name}</span>
         <span className="serie-meta">
