@@ -71,16 +71,18 @@ Next:
 The ladder is rank-based, not weighted per pool: `weightForRank(rank)` reads
 `poolPerCard(poolIndex(rank))`. It was tuned for a ~6k pool, where the pools cover the
 whole roster and sum to 100%. At 50,845 the last edge is 17,366, so 33,479 cards fall into
-the final pool on their own: the real weight sums to **320.86**, and a rank-1 card is
-about 1 in 16,000,000 rolls. The fixed 40% extras share is the fix; until it lands the
-odds lean heavily toward the tail.
+the final pool on their own: the weights sum to **320.86** instead of 100, so every card
+is 3.2× likelier than its printed percentage. Drawing is weighted (`w / total`), so the
+real odds today run from **1 in 161,000 at rank 1 to 1 in 48,600 at rank 50,845** — a
+spread of only 3.3×, which is why the ladder reads as flat. The fixed 40% extras share is
+the fix: it puts rank 1 at 1 in 3,000 and rank 50,845 at 1 in 120,000.
 
 ## Known gaps
 
-- The 40% extras share is not implemented, so the roll odds lean toward the tail
-  (see Rarity).
+- The 40% extras share is not implemented, so the ladder reads flat: rank 1 is only
+  **3.3× rarer** than the last card instead of the intended ~40× (see Rarity).
 - No automated tests around economy constants.
-- P22 needs a host.
+- P22: host chosen (Cloudflare Pages, unlimited bandwidth); deployment deferred by the owner.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.
 
 ## Out of scope
