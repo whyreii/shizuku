@@ -64,7 +64,8 @@ const start = () => {
   }
 };
 
-start();
-// Extras hydrate after first paint; the roster notifies subscribers.
-void loadExtraRoster();
-void loadImageMap();
+// Hydrate the pool before the first render: hydrate() drops owned cards for
+// ids it does not know yet, so starting early wipes every extra on reload.
+void Promise.all([loadExtraRoster(), loadImageMap()])
+  .catch(() => undefined)
+  .then(start);
