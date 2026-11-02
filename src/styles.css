@@ -9923,3 +9923,52 @@ kbd {
 .tile-rank {
   font-family: "Bakbak One", var(--ui);
 }
+/* ==================================================================
+   P19: alias and note - the two override fields that had no editor
+   ================================================================== */
+.sheet-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding-top: 2px;
+}
+
+.edit-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.edit-label {
+  flex: 0 0 44px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.edit-input,
+.edit-note {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #0d100d;
+  box-shadow:
+    inset 0 2px 7px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  color: var(--paper);
+  font-family: var(--ui);
+  font-size: 12px;
+}
+
+.edit-note {
+  min-height: 46px;
+  resize: vertical;
+}
+
+.edit-input::placeholder,
+.edit-note::placeholder {
+  color: rgba(166, 185, 204, 0.5);
+}

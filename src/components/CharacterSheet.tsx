@@ -38,6 +38,33 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
   const soulmate = state.soulmateId === char.id;
   const claimedAt = state.owned[char.id]?.claimedAt;
   const canSoulmate = owned && keys >= 10;
+
+  // P19: alias and note are the two override fields that had no editor
+  const [aliasDraft, setAliasDraft] = useState(alias ?? "");
+  const [noteDraft, setNoteDraft] = useState(state.overrides[char.id]?.note ?? "");
+
+  useEffect(() => {
+    setAliasDraft(state.overrides[char.id]?.alias ?? "");
+    setNoteDraft(state.overrides[char.id]?.note ?? "");
+  }, [char.id, state.overrides]);
+
+  // one patch for both fields, so two quick blurs can never overwrite each other
+  const commitEdits = () => {
+    const nextAlias = aliasDraft.trim();
+    const nextNote = noteDraft.trim();
+    if (
+      (alias ?? "") === nextAlias &&
+      (state.overrides[char.id]?.note ?? "") === nextNote
+    ) {
+      return;
+    }
+    act((s) =>
+      setOverride(s, char.id, {
+        alias: nextAlias || undefined,
+        note: nextNote || undefined,
+      }),
+    );
+  };
   const cap = keyCap(state);
   const baseValue = rankValue(char.rank);
   const nowValue = owned ? divorceValue(char.id, keys) : baseValue;
@@ -350,6 +377,35 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
             {keys} / {cap}
           </span>
         </div>
+      </div>
+
+      <div className="sheet-edit">
+        <label className="edit-row">
+          <span className="edit-label">alias</span>
+          <input
+            className="edit-input"
+            value={aliasDraft}
+            maxLength={40}
+            placeholder={char.name}
+            onChange={(event) => setAliasDraft(event.target.value)}
+            onBlur={commitEdits}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
+          />
+        </label>
+        <label className="edit-row">
+          <span className="edit-label">note</span>
+          <textarea
+            className="edit-note"
+            value={noteDraft}
+            rows={2}
+            maxLength={280}
+            placeholder="anything worth remembering"
+            onChange={(event) => setNoteDraft(event.target.value)}
+            onBlur={commitEdits}
+          />
+        </label>
       </div>
     </Modal>
   );
