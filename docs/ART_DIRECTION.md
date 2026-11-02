@@ -135,6 +135,12 @@ Rules: titles and names keep capitals; every other string is lowercase; no excla
 the roll reveal frame-by-frame, the fountain hero, the per-tier frame matrix and
 the acceptance checklist.
 
+**Status 2026-11-02 â€” 2C mostly landed.** Frames resolved to a single 1px keyline
+for every tier (the tier reads from the chip); the fountain hero, the droplet mark
+plus favicon and the two illustrated empty states shipped; the rail pass is clean
+at 1440 and 1772. Sound stays blocked, and the roll reveal belongs to the motion
+pass. Detail and measurements: `HERO_SPECS.md` Â§12.
+
 ## 9. Build order and gates
 
 Repo: `git init` done, `.gitignore` covers `node_modules/` and `dist/`, initial commit `70be4be` (includes the Phase 1 fixes, since 1A was already implemented when the repo was created).

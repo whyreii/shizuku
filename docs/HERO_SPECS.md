@@ -154,22 +154,17 @@ append-only block per surface.
 **Fallback.** If C and D are not distinguishable in the grayscale test at 168px,
 ship **four** frames — S+ / S / A-B / C-D — rather than six near-identical ones.
 
-**Status 2026-11-02 — test failed, decision pending.** First implementation (outer
-ring + inner lines) fixed a real bug — the tier ring was an inset shadow on
-`.card3d-inner`, i.e. painted *under* the full-bleed portrait, so it was never
-visible, and neither was the starwish ring. With the ring moved to the card box
-and thickened to 2–3px, S+ and S are distinguishable, but **A/B/C/D are not** at
-186px in grayscale: C and D have no ring at all and their 2px inner line
-disappears where the art is dark. Edge weight alone cannot carry six tiers over a
-full-bleed image. Three options, none chosen yet:
+**Status 2026-11-02 â€” resolved: no per-tier frames.** The grayscale test failed,
+and the answer was to stop carrying tier on the frame at all: every card has one
+1px keyline at `inset: 6px` and the tier is read from the chip only (`b996d33`).
+The A seam and the D base line went with it. The six-row matrix above is therefore
+history, not a plan.
 
-1. **Mat** — a 6px inset band of card surface around the art; the tier lives in
-   the mat (foil strip, groove, seam, etched lip). Gives the frame area; changes
-   the card composition slightly.
-2. **Corner vocabulary** — one corner treatment per tier (cut, rounded, notched,
-   square, half-cut, plain). Survives grayscale without touching the art area.
-3. **Four frames** — S+ / S / A-B / C-D, which still fails for A vs B and C vs D
-   with edges alone unless combined with 1 or 2.
+Why the six-frame idea died: the tier edge started as an inset shadow on
+`.card3d-inner`, i.e. painted *under* the full-bleed portrait, so it was never
+visible â€” and neither was the starwish ring. Moved to the card box, S+ and S read
+at 186px, but **A/B/C/D did not**: C and D had no ring, and their inner line
+vanished over dark art. Edge weight alone cannot carry six tiers over a photograph.
 
 Rules:
 
@@ -267,3 +262,29 @@ medal mix) close before 2C signs off.
 
 1. Wordmark lettering: later, or never?
 2. Deferred empty states: after 2C, or drop them?
+
+---
+
+## 12. 2C build status — 2026-11-02
+
+What actually shipped, and what the browser measured. The spec text above is kept
+as the approved design; where the build differs, it is recorded here.
+
+| Item | State | Notes |
+|---|---|---|
+| Per-tier frames | **closed by decision** | one 1px keyline for every tier; tier reads from the chip (§4) |
+| Fountain hero | **shipped** `fac0633` | shell `clamp(200px, 13vw, 260px)` (200 / 230px measured at 1440 / 1772); 5/12 bowl, 7/12 perks; 12 rim cuts 5×4px, distributed with a 2px minimum gap; tier numeral 40px + count 20px inside the bowl, above the water so 12/12 stays legible; `dry` at 12px in the 0/12 state; price plate under the bowl, right-aligned |
+| Droplets | **shipped** | three 3px drops from the spout, 380ms fall, 70ms stagger, one 1px ring each at the new surface (200ms); one pour per purchase, none on mount or tab change; `display: none` under reduced motion |
+| Wordmark | **shipped** `ab932a0` | droplet mark in the header plus `public/favicon.svg` (gradient drop, one 32% facet, 718 bytes). Letterforms stay Instrument Serif — hand-cut paths still deferred |
+| Empty states | **shipped** `ab932a0` | stage card back 180×252 (weave + cut corner) with the sentence under it; empty plinth 120×160 (stand + crescent shadow). The Loot crate and the dry bowl stay deferred |
+| Rail pass | **verified** | 1440 + 1772: active icon `rgb(154,217,255)`, 2px × 24px bar at `-10px`, label 11px / 0.33px tracking, no uppercase, no horizontal overflow; Tab focus draws a 2px frost outline at 2px offset |
+| Sound | **blocked** | unchanged: no assets until file sizes and licences are provided |
+
+Deviations from §3, for the record:
+
+- The `fountain 1/12` title line and the `tier N · basins filled` sub were dropped:
+  both facts now live in the bowl, and the page already carries its `Fountain`
+  heading.
+- The count keeps a visually hidden `basins filled` so the digits read as a
+  sentence to a screen reader; the water, cuts and droplets are `aria-hidden`.
+- Ripple rings use literal easing — the motion tokens in §1 still do not exist.
