@@ -9692,3 +9692,9 @@ kbd {
   background: none;
   box-shadow: none;
 }
+/* the ready pulse paints up to 22px outside the hex, and the panel is a scroll
+   box that clips at its own edge; the wall keeps that much gutter so the first
+   and last medal are never sliced (title and stats stay on the panel edge) */
+.medal-wall {
+  padding-inline: 22px;
+}
