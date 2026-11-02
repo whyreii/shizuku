@@ -82,6 +82,7 @@ export default function App() {
   const [claimPulse, setClaimPulse] = useState(0);
   const [keyCue, setKeyCue] = useState(false);
   const [pendingSave, setPendingSave] = useState<File | null>(null);
+  const [wiping, setWiping] = useState(false);
   const [boardOpen, setBoardOpen] = useState(false);
   const [, bumpRoster] = useState(0);
 
@@ -203,6 +204,8 @@ const fileRef = useRef<HTMLInputElement>(null);
   };
 
   const now = Date.now();
+  const ownedCount = Object.keys(state.owned).length;
+  const wishCount = state.wishes.length;
   const current = state.current ? characterById(state.current.charId) : null;
   const windowOpen = claimWindowOpen(state, now);
   const remaining = state.current
@@ -596,10 +599,7 @@ const fileRef = useRef<HTMLInputElement>(null);
             <button
               className="btn danger"
               style={{ width: "100%" }}
-              onClick={() => {
-                reset();
-                setSettingsOpen(false);
-              }}
+              onClick={() => setWiping(true)}
             >
               Wipe save
             </button>
@@ -615,6 +615,26 @@ const fileRef = useRef<HTMLInputElement>(null);
           act={act}
           actUndo={actWithUndo}
           onClose={() => setBoardOpen(false)}
+        />
+      ) : null}
+
+      {wiping ? (
+        <ConfirmDialog
+          title="Wipe your save?"
+          body={`This deletes ${ownedCount} ${
+            ownedCount === 1 ? "card" : "cards"
+          }, ${formatKakera(state.kakigori)} kakigori, ${wishCount} ${
+            wishCount === 1 ? "wish" : "wishes"
+          } and every override. There is no undo.`}
+          confirmLabel="Wipe"
+          danger
+          onCancel={() => setWiping(false)}
+          onConfirm={() => {
+            reset();
+            setWiping(false);
+            setSettingsOpen(false);
+            notify("save wiped", "warn");
+          }}
         />
       ) : null}
 

@@ -43,10 +43,10 @@ is the currency.
 | P15 | Lootboxes | ✅ |
 | P16 | Series index + per-series modal | ✅ |
 | P17 | Wishes — wishlist, starwish, boost, wish-a-series | ✅ |
-| P18 | Media — galleries live; 12 slots and GIFs never specified | partial |
+| P18 | Media — galleries with no cap, GIFs by URL | ✅ |
 | P19 | Personalization — alias + note, image override, 2 wish presets | ✅ |
-| P20 | Settings knobs — novelty + save transport live | partial, rest unspecified |
-| P21 | Progression UI | unspecified |
+| P20 | Settings knobs — novelty, wish boost, save transport, wipe | ✅ |
+| P21 | Progression UI — rolls/claims/shards line shipped; dashboard never specified | dropped |
 | P22 | Ship | — |
 
 ## Performance work (P12)
@@ -67,9 +67,11 @@ Next:
 
 ## Rarity
 
-```
-EXTRA_WEIGHT = (share / (1 - share)) × baseWeight / extraCount     // share = 0.4
-```
+The ladder is rank-based, not weighted per pool: `weightForRank(rank)` reads
+`poolPerCard(poolIndex(rank))`, and the pools normalise so the whole roster sums to
+exactly 100% (`totalWeight() = 1`). Growing the pool lowers every per-card chance
+and needs no weight change — the `EXTRA_WEIGHT` formula this section used to
+show was never built.
 
 | Pool | Top-10 card | Top-50 band |
 | ---- | ----------- | ----------- |
@@ -82,7 +84,7 @@ EXTRA_WEIGHT = (share / (1 - share)) × baseWeight / extraCount     // share = 0
 - Full roster capture not run yet (needs a clean cache; the current one is capped at
   60 characters per series).
 - No automated tests around economy constants.
-- P18's media slots/GIFs and P21 were never specified, so they cannot be scoped.
+- P22 needs a host; the P13 roster capture is the last data job.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.
 
 ## Out of scope
