@@ -9225,3 +9225,15 @@ kbd {
 .card3d.tier-s { --edge-w: 1.5px; }
 .card3d.tier-a { --edge-w: 1px; }
 .card3d.tier-b { --edge-w: 1px; }
+
+/* 2C: the wish card name sat flush on the bottom edge (6px top, 0 bottom).
+   A fixed band centre the single line and keeps the empty slot in step. */
+.wish-card-name {
+  height: 30px;
+  padding: 0 8px;
+  line-height: 30px;
+}
+
+.wish-slot {
+  padding-bottom: 30px;
+}
