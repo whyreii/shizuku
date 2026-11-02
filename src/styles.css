@@ -10671,11 +10671,8 @@ kbd {
   color: var(--muted);
 }
 
-/* 782 cards: skip layout and paint for what is off screen */
-.serie-card {
-  content-visibility: auto;
-  contain-intrinsic-size: 150px 232px;
-}
+/* paging caps the DOM; content-visibility blanked cards after a scroll, so it is off */
+
 /* the filter row is its own segmented control (the settings one is scoped) */
 .series-seg {
   display: inline-flex;
