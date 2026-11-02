@@ -55,12 +55,9 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
   /* falling star with a trail */
   wishes: (
     <>
-      <path d="M3.6 4c5.2 2.2 11.6 2.2 16.8 0" />
-      <path d="M12 5.8v1.4" />
-      <path d="M12 6.3 13.2 7.5 12 8.7 10.8 7.5Z" />
-      <path d="M9.6 8.8h4.8v11.6H9.6Z" />
-      <path d="M10.9 11.6h2.2M10.9 13.8h2.2" />
-      <path d="M9.6 15.2h4.8v5.2H9.6Z" {...FACET} />
+      <path d="M15.2 2.2 16.73 6.3 21.1 6.48 17.67 9.2 18.84 13.42 15.2 11 11.56 13.42 12.73 9.2 9.3 6.48 13.67 6.3Z" />
+      <path d="M11.4 13.4C8.8 15.6 6.6 17.6 4 19.4M10 11.4C8.2 13 6.8 14.4 5.4 16" />
+      <path d="M11.56 13.42 15.2 11 12.73 9.2Z" {...FACET} />
     </>
   ),
   /* hex medal, face, ribbon */
@@ -75,12 +72,10 @@ const GLYPHS: Record<DraftIconName, ReactNode> = {
   /* basin with two jets */
   fountain: (
     <>
-      <path d="M4.6 10.8h14.8l-1.1 3.8H5.7Z" />
-      <path d="M6.8 14.6h10.4l-.9 3.2H7.7Z" />
-      <path d="M12 10.8V5.4" />
-      <path d="M10.4 4.2h3.2" />
-      <path d="M10.6 5.6c-1.9 1.2-2.8 2.7-3.2 4.6M13.4 5.6c1.9 1.2 2.8 2.7 3.2 4.6" />
-      <path d="M5.4 11.8h13.2l-.6 2.2H6Z" {...FACET} />
+      <path d="M7.4 11.4h7.6l1.6 1.6v7H8.4Z" />
+      <path d="M7.9 15.2h8.1" />
+      <path d="M12 3.2c1.3 1.5 2 2.6 2 3.4a2 2 0 0 1-4 0c0-.8.7-1.9 2-3.4Z" />
+      <path d="M8 15.4h8l-.6 4.6H8.6Z" {...FACET} />
     </>
   ),
   /* chest with a tilted lid */

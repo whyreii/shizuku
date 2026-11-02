@@ -66,22 +66,9 @@ Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1)
 
 **Hand:** "carved ice" — 1.5px weight, **flat-cut (butt) terminals**, **45° chamfers** (1.8 units on the 24 grid, echoing the panel's 8px chamfer), and **one filled facet at 30% opacity per glyph**. No round caps, no mixed weights. Medal glyphs run at ~60px in the app and may be richer; the 16px gate applies to rail, header and action icons.
 
-**Rail:** variant **B, no dot**; the active icon is lit, plus the 2px bar. The tint rule is **pending**: both were rendered and are on the sheet.
+**Rail:** variant **B, no dot**; the active icon is lit, plus the 2px bar. Tint rule **A is locked**: every active tab is lit in frost `#9ad9ff` — the app's `.rail-item.on svg` already uses `var(--frost)`, so this is live. Per-tab tints were rejected: four of them reuse tier hues (Wishes yuzu = S+, Medals grape = S, Fountain melon = B, Loot plum = C) and can read as a tier stamp.
 
-- **T · per-tab syrup**: each tab lit in its own syrup. Risk: four of those reuse tier hues — Wishes yuzu = S+, Medals grape = S, Fountain melon = B, Loot plum = C — so a tinted rail icon can read as a tier stamp next to a card.
-- **A · one accent (recommended)**: every active tab lit in frost `#9ad9ff`. The tint stays on the card frame, not the navigation.
-
-| Tab | Tint under T |
-|---|---|
-| Album | ramune `#8cc8ff` |
-| Wishes | yuzu `#e4f0a8` |
-| Medals | grape `#c3a8ff` |
-| Fountain | melon `#6fe3b4` |
-| Loot | plum `#b98bb8` |
-| Series | slush `#9fb2c2` (lifted for 20px) |
-| Ripples | frost `#9ad9ff` |
-
-**Contact sheet gate:** round 3 — `loot`, `fountain`, `wishes`, `series` and `gear` redrawn; rendered at **16 / 24 / 48px on ink and on frost**, plus the 20px rail under both tint rules: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
+**Wired:** **21 glyphs are live in `Icon.tsx`** under the app's existing names (no call-site changes): album, loot, series, gear, medals (as `badge`), ripples (as `log`), plus the header/action set and the 7 medal glyphs (`sleet`…`aurora`). `fountain` and `wish` are the round-2 drafts as **placeholders marked TODO** until the round-4 pair is signed off: `docs/icon-round4-fountain-wishes.png` (route `?preview=icons`). The approved 21 are on `docs/icon-contact-sheet.png`.
 
 ![icon contact sheet](icon-contact-sheet.png)
 
