@@ -206,7 +206,9 @@ export function WishlistPanel({ state, act, notify }: PanelProps) {
       p.wishes.every((id) => state.wishes.includes(id)),
   );
 
-  const nextFreeSlot = state.presets.length < MAX_PRESETS;
+  const overwriteName = state.presets.some(
+    (p) => p.name.toLowerCase() === draft.trim().toLowerCase(),
+  );
 
   const commitPreset = () => {
     const name = draft.trim();
@@ -306,9 +308,6 @@ export function WishlistPanel({ state, act, notify }: PanelProps) {
 
       <div className="preset-row" role="group" aria-label="wish presets">
         <span className="preset-label">presets</span>
-        <span className="preset-counter">
-          {state.presets.length} / {MAX_PRESETS}
-        </span>
 
         {state.presets.map((preset) => {
           const active = preset.id === activePreset?.id;
@@ -341,51 +340,49 @@ export function WishlistPanel({ state, act, notify }: PanelProps) {
                 title={`delete ${preset.name}`}
                 onClick={() => remove(preset)}
               >
-                Ã—
+                <Icon name="close" size={11} />
               </button>
             </span>
           );
         })}
 
-        {Array.from({ length: MAX_PRESETS - state.presets.length }).map((_, i) => (
-          <span key={`slot-${i}`} className="preset-slot" aria-hidden="true" />
-        ))}
-
-        {naming ? (
-          <span className="preset-save">
-            <input
-              autoFocus
-              className="preset-input"
-              value={draft}
-              maxLength={24}
-              placeholder="name this lineup"
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") commitPreset();
-                if (event.key === "Escape") {
-                  setNaming(false);
-                  setDraft("");
-                }
-              }}
-            />
+        {state.presets.length < MAX_PRESETS ? (
+          naming ? (
+            <span className="preset-save">
+              <input
+                autoFocus
+                className="preset-input"
+                value={draft}
+                maxLength={24}
+                placeholder="name this lineup"
+                onChange={(event) => setDraft(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") commitPreset();
+                  if (event.key === "Escape") {
+                    setNaming(false);
+                    setDraft("");
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="preset-confirm"
+                onClick={commitPreset}
+                disabled={!draft.trim()}
+              >
+                {overwriteName ? "overwrite" : "save"}
+              </button>
+            </span>
+          ) : (
             <button
               type="button"
-              className="preset-confirm"
-              onClick={commitPreset}
-              disabled={!draft.trim()}
+              className="preset-slot"
+              title="save the wishes on the plinth as a lineup"
+              onClick={() => setNaming(true)}
             >
-              save
+              save lineup
             </button>
-          </span>
-        ) : nextFreeSlot ? (
-          <button
-            type="button"
-            className="preset-add"
-            title="save the wishes on the plinth as a lineup"
-            onClick={() => setNaming(true)}
-          >
-            save lineup
-          </button>
+          )
         ) : null}
       </div>
       {others.length === 0 && !star ? (

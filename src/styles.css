@@ -9989,16 +9989,11 @@ kbd {
   max-width: 680px;
 }
 
-.preset-label,
-.preset-counter {
+.preset-label {
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--muted);
-}
-
-.preset-counter {
-  margin-right: 4px;
-  color: rgba(154, 217, 255, 0.6);
+  margin-right: 2px;
 }
 
 /* a filled preset is a frosted pill; the active one is lit along its edge */
@@ -10029,7 +10024,7 @@ kbd {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 4px 5px 10px;
+  padding: 5px 2px 5px 10px;
   border: 0;
   background: none;
   color: var(--paper);
@@ -10043,9 +10038,8 @@ kbd {
 }
 
 .preset-star {
+  display: inline-flex;
   color: var(--frost);
-  font-size: 11px;
-  line-height: 1;
 }
 
 .preset-apply i {
@@ -10054,33 +10048,63 @@ kbd {
   color: var(--muted);
 }
 
+/* the delete control is revealed on intent, so the chip has one obvious action */
 .preset-del {
-  padding: 3px 9px 4px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  padding: 0;
   border: 0;
+  border-radius: 50%;
   background: none;
   color: var(--muted);
-  font-family: var(--ui);
-  font-size: 13px;
-  line-height: 1;
   cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    color 120ms ease;
+}
+
+.preset-chip:hover .preset-del,
+.preset-chip:focus-within .preset-del {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .preset-del:hover {
   color: var(--signal);
 }
 
-/* the unused slots are etched, so the cap reads as capacity, not absence */
+/* the free slot is the save control: etched until you reach for it */
 .preset-slot {
-  width: 52px;
+  display: inline-flex;
+  align-items: center;
   height: 26px;
+  padding: 0 12px;
+  border: 0;
   border-radius: 999px;
   background: #0d100d;
   box-shadow:
     inset 0 2px 6px rgba(0, 0, 0, 0.55),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-family: var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
 }
 
-.preset-add,
+.preset-slot:hover {
+  color: var(--frost);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px color-mix(in srgb, var(--frost) 40%, transparent);
+}
+
 .preset-confirm {
   padding: 0;
   border: 0;
@@ -10095,7 +10119,6 @@ kbd {
   border-bottom: 1px solid transparent;
 }
 
-.preset-add:hover,
 .preset-confirm:hover {
   color: var(--frost);
   border-bottom-color: var(--frost);

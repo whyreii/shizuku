@@ -449,7 +449,7 @@ export const MAX_PRESETS = 2;
 const PRESET_NAME_MAX = 24;
 
 /** Validates saved presets on load: unknown ids and junk entries are dropped. */
-function readPresets(raw: unknown, known: Set<string>): WishPreset[] {
+function readPresets(raw: unknown): WishPreset[] {
   if (!Array.isArray(raw)) return [];
   const out: WishPreset[] = [];
   for (const entry of raw) {
@@ -459,15 +459,12 @@ function readPresets(raw: unknown, known: Set<string>): WishPreset[] {
     out.push({
       id: typeof p.id === "string" && p.id ? p.id : `p${out.length + 1}`,
       name: p.name.trim().slice(0, PRESET_NAME_MAX),
+      // ids are kept even when the roster cannot resolve them yet: a slow or
+      // failed roster load must not empty a preset (same rule as owned cards)
       wishes: Array.isArray(p.wishes)
-        ? p.wishes
-            .filter((id): id is string => typeof id === "string" && known.has(id))
-            .slice(0, 200)
+        ? p.wishes.filter((id): id is string => typeof id === "string").slice(0, 200)
         : [],
-      starwish:
-        typeof p.starwish === "string" && known.has(p.starwish)
-          ? p.starwish
-          : null,
+      starwish: typeof p.starwish === "string" ? p.starwish : null,
       savedAt: typeof p.savedAt === "number" ? p.savedAt : 0,
     });
     if (out.length >= MAX_PRESETS) break;
@@ -486,11 +483,12 @@ export function savePreset(prev: GameState, name: string): GameState {
     throw new GameError(`Two presets is the limit - delete one first.`);
   }
   const preset: WishPreset = {
-    id: index >= 0 ? prev.presets[index].id : `p${Date.now().toString(36)}`,
+    id:
+      index >= 0
+        ? prev.presets[index].id
+        : `p${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
     name: label,
-    wishes: prev.wishes
-      .filter((id) => characterById(id))
-      .slice(0, wishCap(prev)),
+    wishes: prev.wishes.slice(),
     starwish: prev.starwish,
     savedAt: Date.now(),
   };
@@ -719,7 +717,7 @@ export function hydrate(raw: Partial<GameState> & Record<string, unknown>): Game
     badges,
     tower: { ...EMPTY_TOWER, ...((raw.tower as GameState["tower"]) ?? {}), perks: ((raw.tower as GameState["tower"])?.perks ?? []).slice() },
     lastDailyAt: typeof raw.lastDailyAt === "number" ? raw.lastDailyAt : 0,
-    presets: readPresets(raw.presets, known),
+    presets: readPresets(raw.presets),
   overrides: (raw.overrides as Record<string, Override>) ?? {},
     stats: (raw.stats as GameState["stats"]) ?? { rolls: 0, claims: 0, keys: 0 },
     log: (raw.log as LogLine[]) ?? [],

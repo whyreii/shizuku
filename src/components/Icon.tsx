@@ -34,7 +34,8 @@ export type IconName =
   | "frost"
   | "blizzard"
   | "glacier"
-  | "aurora";
+  | "aurora"
+  | "close";
 
 const FACET = {
   fill: "currentColor",
@@ -49,6 +50,13 @@ const GLYPHS: Partial<Record<IconName, ReactNode>> = {
     <>
       <path d="M12 2.6 16 9.6 12 21.4 8 9.6Z" />
       <path d="M12 2.6 16 9.6 12 21.4Z" {...FACET} />
+    </>
+  ),
+  /* a cut cross: two strokes, no rounded caps */
+  close: (
+    <>
+      <path d="M6.5 6.5 17.5 17.5" />
+      <path d="M17.5 6.5 6.5 17.5" />
     </>
   ),
   /* wide faceted gem */
