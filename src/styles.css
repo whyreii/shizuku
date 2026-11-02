@@ -10451,3 +10451,6 @@ kbd {
   margin-left: auto;
   padding: 9px 16px;
 }
+.preview-series-crumb {
+  color: var(--frost);
+}

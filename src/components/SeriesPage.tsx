@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { CharacterSheet } from "./CharacterSheet";
 import { useConfirm } from "./useConfirm";
 import { Icon } from "./Icon";
+import { titleCase } from "./SeriesGrid";
 import { usePortrait } from "../engine/images";
 import {
   divorce,
@@ -110,7 +111,7 @@ export function SeriesPage({ state, series, act, actUndo, onBack }: Props) {
           series
         </button>
         <div className="series-page-titles">
-          <h2 className="series-page-title">{series}</h2>
+          <h2 className="series-page-title">{titleCase(series)}</h2>
           <p className="series-page-meta">
             <b>{owned.length}</b> / {chars.length} collected
             <i />
