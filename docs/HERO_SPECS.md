@@ -1,8 +1,12 @@
-# 2C — Hero specs (proposal)
+# 2C — Hero specs
 
-Status: **awaiting approval. Nothing in this file is built.**
+Status: **accepted 2026-11-02** (review changes folded in below).
 Scope: the six items in `ART_DIRECTION.md` §8. Game logic, odds, economy, unlock
 rules and the save format are untouched.
+
+Changes accepted in review: shorter C/D reveal, ROLL unblocked mid-reveal, fluid
+fountain shell, two empty states first, droplet-only wordmark, frame tokens with a
+four-frame fallback, and a dev-only state fixture so the rare states can be seen.
 
 ---
 
@@ -11,11 +15,11 @@ rules and the save format are untouched.
 | Rule | Consequence here |
 |---|---|
 | No `backdrop-filter`, no blurred viewport layers | every effect is a transform, opacity, or a 1px line |
-| Reduced motion | one 120ms opacity fade replaces the whole reveal; frames and water are static |
-| Animations never block input | transform/opacity only; no element gains `pointer-events: none`; only ROLL is disabled, and only while a roll is in flight |
+| Reduced motion | one 120ms opacity fade replaces the whole reveal; frames and water static |
+| Animations never block input | transform/opacity only; no element gains `pointer-events: none`; ROLL is re-enabled **300ms** into the reveal |
 | No text under 11px | every new label is ≥11px |
 | Uppercase only for ROLL / CLAIM / primary / stamps | all new labels are sentence case |
-| 8px chamfer = frosted panels + modal only | card frames keep their own geometry (see §4) |
+| 8px chamfer = frosted panels + modal only | card frames keep their own 18px radius |
 | No fake data | water level, tier numeral and counts all read from state |
 
 Colour stays a tier *edge*, never the only carrier of the frame.
@@ -45,18 +49,19 @@ Current behaviour: `doRoll` waits **260ms** while the card dims (`.hero.rolling`
 → `scale(.975)`, `brightness(.78)`), then the card is replaced and plays
 `reveal` (rotateY +55° → 0, 350–850ms by tier).
 
-Proposal: keep the press, replace the single animation with three beats, and
-make the last beat tier-specific.
+Proposal: keep the press, replace the single animation with three beats, and make
+the last beat tier-specific.
 
 | t (ms) | Beat | Stage card | Controls | Notes |
 |---|---|---|---|---|
-| 0 | **press** | brightness `.78`, scale `.975` | ROLL key travels 4px, `disabled` | unchanged |
+| 0 | **press** | brightness `.78`, scale `.975` | ROLL key travels 4px | unchanged |
 | 0–140 | **old card out** | opacity → 0 | — | swap moves from 260ms to **140ms** |
-| 140 | **swap** | new card mounts at `rotateY(55deg)`, `opacity 0` | chip hidden | no layout shift; same 288×403 box |
+| 140 | **swap** | new card mounts at `rotateY(40deg)`, `opacity 0` | chip hidden | no layout shift; same 288×403 box |
 | 140–320 | **turn** | rotateY → 0, opacity 0 → 1 over the first 180ms | — | `--ease-turn` |
 | 240–620 | **specular** | one 1px frost line sweeps the top edge, left → right | — | 380ms, once, S+ and S only |
+| **300** | **unblock** | — | **ROLL re-enabled** | the flourish finishes underneath |
 | 560 | **stamp** | tier chip scales `92% → 100%` (`--ease-stamp`) + 1px ring pulse | — | no glow |
-| 760–900 | **settle** | sweep fades to 0 | ROLL re-enabled by state change | end state = steady card |
+| 760–900 | **settle** | sweep fades to 0 | — | end state = steady card |
 
 Per-tier length (total, from the swap):
 
@@ -64,21 +69,20 @@ Per-tier length (total, from the swap):
 |---|---|---|---|---|
 | S+ | **900ms** | 340ms | yes, 380ms | 5, 60ms stagger, once |
 | S | 760ms | 300ms | yes, 300ms | — |
-| A / B | 640ms | 260ms | — | — |
-| C / D | 520ms | 220ms | — | — |
+| A / B | 600ms | 260ms | — | — |
+| C / D | **420ms** | 220ms | — | — |
 
 - The turn angle drops from 55° to **40°** so the card never leaves its column.
-- Nothing waits on the animation: the new card is in the DOM and interactive at
-  140ms; only ROLL is disabled, and only while `rolling`.
-- Sparkles exist today as `.card-sparkles` (5 `<i>`); the spec keeps them but
-  makes them **one pass** instead of their current loop.
+- The new card is in the DOM and interactive at 140ms. Only ROLL waits, and only
+  until 300ms — earlier than the end of every tier's reveal.
+- Sparkles exist today as `.card-sparkles` (5 `<i>`); they become **one pass**
+  instead of a loop.
 - Reduced motion: swap at 0ms, `opacity 0 → 1` in 120ms, no turn, no sweep, no
-  sparkles, chip appears instantly.
-- Keyboard: the roll is already bound to a key; the reveal adds no new listener.
+  sparkles, chip instant, ROLL free.
+- Keyboard: the roll key already exists; the reveal adds no listener.
 
-Verification: total measured from `pointerdown` on ROLL to the card reporting
-`animationName: none` must be ≤ tier total + 40ms; `document.body` must accept a
-click on another control at 200ms.
+Verification: from `pointerdown` on ROLL, the card reports `animationName: none`
+within tier total + 40ms, and ROLL accepts a second press at 300ms.
 
 ---
 
@@ -91,9 +95,9 @@ Goal: the basin is the tab's object; perks are the list under it.
 | Element | Today | Spec |
 |---|---|---|
 | Columns | basin 4/12, perks 8/12 | basin **5/12** (min 380px), perks 7/12 |
-| Shell height | 148px | **216px** |
-| Title block | `fountain 1/12` + `tier 1 · basins filled` | keep, but numeral separates (§ below) |
-| Next-basin plate | right of the title | moves **under the shell**, right-aligned, full column width |
+| Shell height | 148px fixed | **`clamp(200px, 13vw, 260px)`** |
+| Title block | `fountain 1/12` + `tier 1 · basins filled` | keep, numeral separates (§ below) |
+| Next-basin plate | right of the title | moves **under the shell**, right-aligned |
 
 **The shell**
 
@@ -102,28 +106,27 @@ Goal: the basin is the tab's object; perks are the list under it.
 - **12 rim notches** along the top inner edge: 5×4px, 2px gap, 10px inset, square.
   Empty = cut (dark inner shadow), full = water (frost, 1px top light).
 - **Water line**: 1px `rgba(226,246,255,.85)` at `filled / 12`, with an 8px
-  meniscus band (2px dash, 6px gap) that slides 40px over 3.6s — the only loop.
-- Below the surface: frost gradient `rgba(154,217,255,.5)` → `rgba(90,150,190,.14)`
-  at the floor. No glow.
-- **Tier numeral**: `tier 2` in Bakbak 40px, left-aligned inside the bowl's lower
-  band; count `9 / 12` at 20px to its right. Reads as one line under the water,
-  not above the bowl.
-- **Dry state (0/12)**: interior shows the etched floor only, at 40% contrast,
-  plus `dry` at 12px under the numeral. No water line, no wave.
+  meniscus band (2px dash, 6px gap) sliding 40px over 3.6s — the only loop.
+- Below the surface: frost gradient `rgba(154,217,255,.5)` → `rgba(90,150,190,.14)`.
+  No glow.
+- **Tier numeral**: `tier 2` in Bakbak 40px inside the bowl's lower band; count
+  `9 / 12` at 20px beside it. One line under the water, not above the bowl.
+- **Dry state (0/12)**: etched floor only, 40% contrast, `dry` at 12px under the
+  numeral. No water line, no wave.
 
-**Droplets on purchase** (one-shot, 420ms)
+**Droplets on purchase** (one-shot, ≤760ms)
 
 1. key press → `buildFloor` (existing)
-2. three droplets, 3px, spawn at the spout mouth (`50%`, top of the shell),
-   fall to the new surface, staggered 80ms, `--ease-out`
+2. three 3px droplets spawn at the spout mouth (`50%`, top of the shell), fall to
+   the new surface, staggered 80ms, `--ease-out`
 3. on impact each draws a 1px ring expanding to 24px over 220ms, fading out
-4. total ≤ 760ms, runs once, never on mount or on tab change
+4. runs once — never on mount, never on tab change
 
 **Perks demoted**
 
-- 2 columns, row height 44px, price 13px, label 12px, blurb 11px on one line
-  (copy pass trims the two longest).
-- Keep the affordable gold base edge. No ring, no lift on hover beyond the fill.
+- 2 columns, 44px rows, price 13px, label 12px, blurb 11px on one line (copy pass
+  trims the two longest).
+- Keep the affordable gold base edge. No ring; hover only lifts the fill.
 
 ---
 
@@ -131,96 +134,119 @@ Goal: the basin is the tab's object; perks are the list under it.
 
 The frame *is* the tier: each tier differs in **edge geometry and weight**, not
 just hue. Applied to the stage card (288px), album tiles (168px) and the
-inspector sheet. The 8px chamfer stays a frosted-panel device — card frames keep
-their 18px radius.
+inspector sheet. Card frames keep their 18px radius; the 8px chamfer stays a
+frosted-panel device.
 
-| Tier | Edge | Inner line | Corner | Specular | Motion |
-|---|---|---|---|---|---|
-| **S+** foil-ice | 1px yuzu at 85% | 2px light along the top edge, inside | 18px radius | one 380ms sweep on reveal | 5 sparkles, one pass |
-| **S** grape bevel | 1.5px grape at 70% | 1px dark line inset 3px, full frame (the bevel) | 18px | none | — |
-| **A** ramune seam | 1px ramune at 60% | 1px seam inset 10px, **left edge only**, 24px tall | 18px | none | — |
-| **B** melon etched | 1px melon at 40% | 2px top inner shadow (cut, not drawn) | 18px | none | — |
-| **C** plum matte | none | 1px plum at 22%, top edge only | 18px | none | — |
-| **D** slush plain | none | 1px `--line` at the bottom edge only | 18px | none | — |
+| Tier | Edge | Inner line | Specular | Motion |
+|---|---|---|---|---|
+| **S+** foil-ice | 1px yuzu at 85% | 2px light along the top edge | one 380ms sweep | 5 sparkles, one pass |
+| **S** grape bevel | 1.5px grape at 70% | 1px dark line inset 3px, full frame | none | — |
+| **A** ramune seam | 1px ramune at 60% | 1px seam inset 10px, **left edge only**, 24px tall | none | — |
+| **B** melon etched | 1px melon at 40% | 2px top inner shadow (cut, not drawn) | none | — |
+| **C** plum matte | none | 1px plum at 22%, top edge only | none | — |
+| **D** slush plain | none | 1px `--line` at the bottom edge only | none | — |
+
+**Implementation: tokens, not overrides.** One `--frame-edge` / `--frame-inner` /
+`--frame-inset` triple consumed by a single `box-shadow` + `::before` pair. Each
+tier sets tokens only. This is the rule that stops `styles.css` growing another
+append-only block per surface.
+
+**Fallback.** If C and D are not distinguishable in the grayscale test at 168px,
+ship **four** frames — S+ / S / A-B / C-D — rather than six near-identical ones.
 
 Rules:
 
-- Tier colour never appears as a fill, wash, or glow on the frame — edge and
-  line only, matching the §0 "frame is the tier" decision.
-- Grayscale test: with all hue removed, the six frames must still be
-  distinguishable at 100% zoom by edge weight and placement alone.
+- Tier colour never appears as fill, wash or glow on the frame — edge and line
+  only.
+- Grayscale test: with hue removed, the frames must be distinguishable at 100%
+  by edge weight and placement alone.
 - The existing inner 1px `rgba(255,255,255,.12)` frame at `inset: 6px` is
-  **replaced** by the per-tier inner line, not stacked on top of it.
-- Starwish / soulmate keep their signal-coloured ring; that state outranks the
-  tier frame and is not part of this matrix.
-- The frame is one `box-shadow`/`::before` pair per card, so switching tiers is a
-  class swap with no extra DOM.
+  **replaced**, not stacked.
+- Starwish / soulmate keep their signal ring; that state outranks the tier frame.
 
 ---
 
 ## 5. Illustrated empty states
 
-Four authored SVGs, 1.5 stroke, butt terminals, one 30% facet, ink + frost. No
-text inside the drawing; the sentence sits below it.
+Authored SVGs, 1.5 stroke, butt terminals, one 30% facet, ink + frost. No text
+inside the drawing; the sentence stays below it.
 
-| Where | Drawing | Size |
-|---|---|---|
-| Wishes, no starwish | empty plinth: stand + a crescent shadow where a card would sit | 120×160 |
-| Loot, sealed | the crate, lid seam and clasp only | 140×120 |
-| Stage, no current roll | card back: the diagonal weave, one corner cut | 180×252 |
-| Fountain, 0/12 | dry bowl: rim notches, etched floor, no water | 220×140 |
+| Order | Where | Drawing | Size |
+|---|---|---|---|
+| 1 | Stage, no current roll | card back: the diagonal weave, one corner cut | 180×252 |
+| 2 | Wishes, no starwish | empty plinth: stand + crescent shadow | 120×160 |
+| — | Loot, sealed | the crate, lid seam and clasp only | 140×120 |
+| — | Fountain, 0/12 | dry bowl: rim notches, etched floor, no water | 220×140 |
 
-They replace placeholder copy only — every state keeps its existing sentence.
+The two deferred ones land after 2C if time survives; both states already read
+correctly today.
 
 ---
 
 ## 6. Wordmark
 
-- `Shizuku` as inline SVG: Instrument Serif skeleton, hand-cut terminals, 22px
-  cap height in the header, tracking `-0.01em`.
-- Droplet mark 12×16 with one facet, placed left, 8px gap.
-- Same SVG exported at 32px for the favicon.
-- No webfont request added; the lettering ships as paths.
+- **Droplet mark only** for 2C: 12×16, one facet, 8px gap before the word.
+- The word stays **Instrument Serif** as set today. Hand-cut letterforms as paths
+  are a separate, later decision — they are large to review and touch every
+  header capture.
+- The mark doubles as the favicon at 32px.
+- No webfont request added.
 
 ---
 
 ## 7. Rail
 
-Already decided and live: **variant B, no dot**, 2px bar, active icon lit in
-frost `#9ad9ff`. 2C-c therefore becomes a verification pass (screenshot at 1440
-and 1772, active/hover/focus), not a new contact sheet — unless you want the
-alternatives rendered anyway.
+Decided and live: **variant B, no dot**, 2px bar, active icon lit in frost
+`#9ad9ff`. 2C-c is a verification pass (1440/1772, active/hover/focus), not a new
+contact sheet.
 
 ---
 
 ## 8. Sound
 
-Blocked. No assets until file sizes and licences are provided. When they are:
-off by default, Settings toggle, no autoplay, ROLL / CLAIM / purchase only.
+Blocked. No assets until file sizes and licences are provided. When they are: off
+by default, Settings toggle, no autoplay, ROLL / CLAIM / purchase only.
 
 ---
 
-## 9. Acceptance checklist
+## 9. Dev state fixture (new)
 
-- [ ] Reveal total per tier ≤ spec (+40ms), measured from pointerdown to last
-      animation ending
-- [ ] Another control is clickable 200ms into the reveal
-- [ ] With reduced motion: no rotation, no sweep, no sparkles, 120ms fade only
-- [ ] Frames pass the grayscale test at 100%
-- [ ] Fountain shell 216px, 12 notches, water line tracks state exactly
+Three in-memory states reachable by URL, **dev builds only**:
+
+| URL | State |
+|---|---|
+| `?state=empty` | first run: no roll, no starwish, sealed loot, dry basin |
+| `?state=mid` | bronze lit + silver ready, 5/12 basin, loot still sealed, 2 wishes |
+| `?state=late` | all 7 medals at Lv 1, 12/12 basin, loot unlocked, 4 wishes, starwish set |
+
+Rules:
+
+- Built through the existing `hydrate()` so it can never contain an unknown id.
+- **Never written to `localStorage`**; reloading the URL rebuilds it.
+- Guarded by `import.meta.env.DEV`; absent from production builds.
+- A fixed `fixture · <name>` chip renders bottom-left while a fixture is active,
+  so no screenshot can be mistaken for a real save.
+
+This is what lets 2B's unverified states (unlocked crate, empty plinth, lit/ready
+medal mix) close before 2C signs off.
+
+---
+
+## 10. Acceptance checklist
+
+- [ ] Reveal total per tier ≤ spec +40ms, measured from pointerdown to last animation
+- [ ] ROLL accepts a second press at 300ms
+- [ ] Reduced motion: no rotation, no sweep, no sparkles, 120ms fade only
+- [ ] Frames pass the grayscale test at 100% (or the four-frame fallback ships)
+- [ ] Fountain shell fluid, 12 notches, water line tracks state exactly
 - [ ] Droplets fire once per purchase, none on mount or tab change
+- [ ] Fixture reaches empty / mid / late, and `localStorage` is byte-identical after
 - [ ] 0 `backdrop-filter`, 0 text under 11px, 0 horizontal overflow at 1440/1772
 - [ ] No odds, economy, unlock or save-format change in the diff
 
 ---
 
-## 10. Questions before build
+## 11. Still open
 
-1. **Reveal length** — 900ms for S+, 520ms for C/D. Acceptable, or shorter?
-2. **Fountain layout** — basin 5/12 columns and a 216px shell. Enough, or taller?
-3. **Frames** — geometric (edge weight + placement) rather than colour-led. Confirm.
-4. **Wordmark** — SVG lettering, or keep the current type and only add the mark?
-5. **Empty states** — all four drawings, or stage + fountain only?
-
-Still unverified from 2B: the unlocked loot crate, the empty plinth, and the
-lit/ready medal mix. Those need a save with those states before 2C signs off.
+1. Wordmark lettering: later, or never?
+2. Deferred empty states: after 2C, or drop them?

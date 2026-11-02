@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createInitialState, hydrate, tick } from "./game";
+import { fixtureFromSearch } from "./fixture";
 import { GameError } from "./types";
 import type { GameState } from "./types";
 
 const STORAGE_KEY = "shizuku.state.v1";
 const LEGACY_KEYS = ["kakigori.state.v1", "kakera.state.v1"];
+
+/** Dev-only sample state. When set, storage is never read or written. */
+const FIXTURE = fixtureFromSearch(window.location.search, Date.now());
 
 function readRaw(): string | null {
   try {
@@ -21,6 +25,7 @@ function readRaw(): string | null {
 }
 
 function load(): GameState | null {
+  if (FIXTURE) return FIXTURE;
   const raw = readRaw();
   if (!raw) return null;
   try {
@@ -60,6 +65,7 @@ export function useGame() {
   }, []);
 
   useEffect(() => {
+    if (FIXTURE) return;
     save(state);
   }, [state]);
 
@@ -89,9 +95,9 @@ export function useGame() {
   }, [flash]);
 
   const reset = useCallback(() => {
-    const fresh = createInitialState(Date.now());
+    const fresh = FIXTURE ?? createInitialState(Date.now());
     setState(fresh);
-    save(fresh);
+    if (!FIXTURE) save(fresh);
   }, []);
 
   const [undo, setUndo] = useState<{ state: GameState; label: string } | null>(null);
