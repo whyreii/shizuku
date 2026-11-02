@@ -1252,11 +1252,8 @@ textarea:focus {
   transition: opacity 0.15s ease;
 }
 
-.sheet.is-clean .card3d:hover .card-top,
-.sheet.is-clean .card3d:hover .card-bottom,
-.sheet.is-clean .card3d:hover .card-flag {
-  opacity: 1;
-}
+/* hide-labels is sticky on purpose: hovering the card must not bring the
+   labels back, or the eye toggle cannot be used to look at the art alone */
 
 .card-hold,
 .shatter {
