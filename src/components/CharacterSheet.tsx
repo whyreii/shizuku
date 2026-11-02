@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card3D } from "./Card3D";
 import { ConfirmDialog, Modal } from "./Modal";
 import { useConfirm } from "./useConfirm";
@@ -15,6 +15,7 @@ import {
 import { rankValue } from "../engine/roster";
 import { setOverride } from "../engine/game";
 import { usePortrait } from "../engine/images";
+import { fetchGallery, isPlaceholderPortrait } from "../engine/images";
 import type { Character, GameState } from "../engine/types";
 
 interface Props {
@@ -72,6 +73,36 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
   const [shown, setShown] = useToggleState<string | null>(null);
   const [draft, setDraft] = useToggleState("");
   const gallery = state.overrides[char.id]?.images ?? [];
+  // Remote extras via Jikan's picture list (JPGs only). In-memory, never saved.
+  const [remote, setRemote] = useState<string[] | null>(null);
+  const [flipped, setFlipped] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    setRemote(null);
+    setShown(null);
+    setFlipped(false);
+    const timer = window.setTimeout(() => {
+      if (alive) setRemote([]);
+    }, 8000);
+    void fetchGallery(char.name, char.series).then(
+      (urls) => {
+        if (!alive) return;
+        window.clearTimeout(timer);
+        setRemote(urls.filter((url) => !isPlaceholderPortrait(url)));
+      },
+      () => {
+        if (!alive) return;
+        window.clearTimeout(timer);
+        setRemote([]);
+      },
+    );
+    return () => {
+      alive = false;
+      window.clearTimeout(timer);
+    };
+  }, [char.id, char.name, char.series]);
+  const extras = remote ?? [];
+  const thumbs = [...gallery, ...extras];
   // the URL field is for cards the resolver can't illustrate
   const resolved = usePortrait(char.name, char.series, char.id, !char.image);
   const hasArt = Boolean(char.image || shown || resolved || gallery.length > 0);
@@ -181,18 +212,115 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
           </svg>
         </button>
 
-        <div className={leaving ? "shatter" : "card-hold"}>
-          <Card3D
-            character={char}
-            alias={alias}
-            keys={keys}
-            keyCap={keyCap(state)}
-            owned={owned}
-            wished={wished}
-            starwish={starwish}
-            soulmate={soulmate}
-            imageOverride={shown}
-          />
+        <div className={leaving ? "shatter" : `flip-hold${flipped ? " is-flipped" : ""}`}>
+          <div className="flip-inner">
+            <div
+              className="flip-front"
+              role="button"
+              tabIndex={leaving ? -1 : 0}
+              aria-pressed={flipped}
+              aria-label={flipped ? "show card front" : "flip to see more pictures"}
+              title={flipped ? "show card front" : "flip to see more pictures"}
+              onClick={() => {
+                if (!leaving) setFlipped((v) => !v);
+              }}
+              onKeyDown={(event) => {
+                if (leaving) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setFlipped((v) => !v);
+                }
+              }}
+            >
+              <Card3D
+                character={char}
+                alias={alias}
+                keys={keys}
+                keyCap={keyCap(state)}
+                owned={owned}
+                wished={wished}
+                starwish={starwish}
+                soulmate={soulmate}
+                imageOverride={shown}
+              />
+              <span className="flip-hint" aria-hidden="true">
+                more pictures
+              </span>
+            </div>
+            <div className="flip-back" aria-hidden={!flipped}>
+              <span className="flip-title">more pictures</span>
+              {thumbs.length > 0 ? (
+                <div className="flip-grid">
+                  {thumbs.map((url) => (
+                    <button
+                      key={url}
+                      type="button"
+                      tabIndex={flipped ? 0 : -1}
+                      className={shown === url ? "gallery-thumb on" : "gallery-thumb flip-thumb"}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setShown(shown === url ? null : url);
+                        setFlipped(false);
+                      }}
+                      title="show this picture on the card"
+                    >
+                      <img src={url} alt="" loading="lazy" draggable={false} />
+                    </button>
+                  ))}
+                </div>
+              ) : remote === null ? (
+                <span className="sheet-shards-text">loading more pictures…</span>
+              ) : (
+                <span className="sheet-shards-text">no extra pictures yet</span>
+              )}
+              {!hasArt ? (
+                adding ? (
+                  <div className="gallery-add">
+                    <input
+                      autoFocus
+                      value={draft}
+                      onChange={(event) => setDraft(event.target.value)}
+                      placeholder="paste an image url"
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") addImage();
+                        if (event.key === "Escape") setAdding(false);
+                      }}
+                    />
+                    <button
+                      className="link"
+                      onClick={addImage}
+                      disabled={!draft.trim()}
+                    >
+                      add
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="link add-art"
+                    tabIndex={flipped ? 0 : -1}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setAdding(true);
+                    }}
+                    title="point this card at a different portrait"
+                  >
+                    add image url
+                  </button>
+                )
+              ) : null}
+              <button
+                type="button"
+                className="link flip-back-btn"
+                tabIndex={flipped ? 0 : -1}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setFlipped(false);
+                }}
+              >
+                flip back
+              </button>
+            </div>
+          </div>
           {leaving ? (
             <div className="shatter-shards" aria-hidden="true">
               <i />
@@ -215,55 +343,6 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
             <span className="sheet-keys-count">{Math.min(keys, 10)} / 10</span>
           </div>
         ) : null}
-
-        {gallery.length > 0 || !hasArt ? (
-          <div className="gallery-strip">
-            {gallery.map((url) => (
-              <button
-                key={url}
-                type="button"
-                className={shown === url ? "gallery-thumb on" : "gallery-thumb"}
-                onClick={() => setShown(shown === url ? null : url)}
-                title="Show this image"
-              >
-                <img src={url} alt="" loading="lazy" />
-              </button>
-            ))}
-            {!hasArt ? (
-              adding ? (
-                <div className="gallery-add">
-                  <input
-                    autoFocus
-                    value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
-                    placeholder="paste an image url"
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") addImage();
-                      if (event.key === "Escape") setAdding(false);
-                    }}
-                  />
-                  <button
-                    className="link"
-                    onClick={addImage}
-                    disabled={!draft.trim()}
-                  >
-                    add
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="link add-art"
-                  onClick={() => setAdding(true)}
-                  title="Point this card at a different portrait"
-                >
-                  add image url
-                </button>
-              )
-            ) : null}
-          </div>
-        ) : null}
-
-
 
         <div className="sheet-value">
           <span className="sheet-value-label">now worth</span>
