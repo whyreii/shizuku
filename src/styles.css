@@ -10315,12 +10315,13 @@ kbd {
   cursor: pointer;
 }
 
-/* no keyline: the portrait is the edge, not a tile in a frame */
+/* square, unframed: no keyline and no corner cut, so the grid reads as a sheet
+   of portraits rather than a wall of tiles */
 .serie-art {
   position: relative;
   display: block;
   aspect-ratio: 63 / 88;
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
   background: #0d100d;
 }
