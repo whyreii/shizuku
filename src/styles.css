@@ -9218,3 +9218,10 @@ kbd {
   --inner-bottom: 2px;
   --inner-bottom-c: #2a2e2a;
 }
+
+/* 2C-b: the band read as a heavy rim at 168-288px. Back to hairlines: the
+   ring now sits outside the art, so 1px is visible where 1px inset was not. */
+.card3d.tier-sp { --edge-w: 1px; }
+.card3d.tier-s { --edge-w: 1.5px; }
+.card3d.tier-a { --edge-w: 1px; }
+.card3d.tier-b { --edge-w: 1px; }
