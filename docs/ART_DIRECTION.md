@@ -64,11 +64,21 @@ Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1)
 - Actions: lock, wish/star, power.
 - Medal glyphs: sleet, hail, glaze, frost, blizzard, glacier, aurora.
 
-**Hand:** "carved ice" — 1.5px weight, **flat-cut (butt) terminals**, 2px corner radius on a 24 grid, built on two primitives (hex cell, droplet) with one deliberate cut per glyph. No round caps, no mixed weights.
+**Hand:** "carved ice" — 1.5px weight, **flat-cut (butt) terminals**, **45° chamfers** (1.8 units on the 24 grid, echoing the panel's 8px chamfer), and **one filled facet at 30% opacity per glyph**. No round caps, no mixed weights. Medal glyphs run at ~60px in the app and may be richer; the 16px gate applies to rail, header and action icons.
 
-**Rail drop:** the proposal adds a filled syrup drop at 20px. The contact sheet renders **two variants** — drop on all seven, and drop only on the active tab (2px frost bar stays in both). If the drop adds clutter at 20px, the fallback is no drop.
+**Rail:** variant **B, no dot**. The active icon is lit in its own syrup, plus the 2px bar.
 
-**Contact sheet gate:** authored in `src/iconDrafts.tsx` (not wired), rendered at **16 / 24 / 48px on ink and on frost**, plus the two rail variants: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
+| Tab | Tint |
+|---|---|
+| Album | ramune `#8cc8ff` |
+| Wishes | yuzu `#e4f0a8` |
+| Medals | grape `#c3a8ff` |
+| Fountain | melon `#6fe3b4` |
+| Loot | plum `#b98bb8` |
+| Series | slush `#9fb2c2` (lifted for 20px) |
+| Ripples | frost `#9ad9ff` |
+
+**Contact sheet gate:** round 2 (revised after review) authored in `src/iconDrafts.tsx` (not wired), rendered at **16 / 24 / 48px on ink and on frost**, plus rail variant B: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
 
 ![icon contact sheet](icon-contact-sheet.png)
 

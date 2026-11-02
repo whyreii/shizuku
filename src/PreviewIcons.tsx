@@ -1,11 +1,10 @@
-import {
+﻿import {
   DRAFT_ACTIONS,
   DRAFT_ALL,
   DRAFT_HEADER,
   DRAFT_MEDALS,
   DRAFT_RAIL,
   DraftIcon,
-  RailDrop,
   type DraftIconName,
 } from "./iconDrafts";
 
@@ -23,6 +22,16 @@ function groupOf(name: DraftIconName): string {
   return "";
 }
 
+const RAIL_TINT: Record<string, string> = {
+  album: "#8cc8ff",
+  wishes: "#e4f0a8",
+  medals: "#c3a8ff",
+  fountain: "#6fe3b4",
+  loot: "#b98bb8",
+  series: "#9fb2c2",
+  ripples: "#9ad9ff",
+};
+
 const CSS = `
 .pi { min-height: 100vh; background: #07080a; color: #e9eef5; font: 13px/1.4 system-ui, sans-serif; padding: 26px 30px 40px; }
 .pi h1 { font-size: 20px; margin: 0 0 2px; }
@@ -39,13 +48,13 @@ const CSS = `
 .pi .pi-name { margin-top: 8px; font-size: 12px; color: #cdd9e5; }
 .pi .pi-cat { font-size: 10.5px; color: #7f8f9f; }
 .pi .pi-railrow { display: flex; gap: 26px; align-items: flex-start; }
-.pi .pi-railbox { width: 220px; border-radius: 12px; padding: 10px 8px 12px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+.pi .pi-railbox { width: 300px; border-radius: 12px; padding: 10px 8px 12px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
 .pi .pi-railcap { font-size: 11px; color: #93a1b1; padding: 4px 8px 8px; }
 .pi .pi-railitem { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 2px 7px; color: #a6b9cc; font-size: 11px; }
 .pi .pi-railitem.on { color: #eef4fb; }
 .pi .pi-railitem.on::before { content:""; position:absolute; left:-6px; top:50%; width:2px; height:22px; margin-top:-11px; border-radius:2px; background:#9ad9ff; box-shadow: 0 0 12px rgba(154,217,255,.8); }
-.pi .pi-iconwrap { position: relative; display: grid; place-items: center; }
-.pi .pi-drop { position: absolute; right: -6px; bottom: -5px; }
+.pi .pi-tints { display: flex; gap: 14px; flex-wrap: wrap; }
+.pi .pi-tint { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; color: #a6b9cc; padding: 8px 10px; border-radius: 9px; background: rgba(255,255,255,.02); box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
 .pi .pi-zoombar { display: flex; align-items: center; gap: 10px; margin-top: 12px; color: #7f8f9f; font-size: 11px; }
 .pi .pi-zoombar b { color: #cdd9e5; font-weight: 500; }
 `;
@@ -64,20 +73,16 @@ function Card({ name, tone }: { name: DraftIconName; tone: "ink" | "frost" }) {
   );
 }
 
-function Rail({ withDrop }: { withDrop: "all" | "active" }) {
+function Rail() {
   return (
     <div className="pi-railbox">
-      <div className="pi-railcap">
-        {withDrop === "all" ? "A · drop on all seven" : "B · drop only on the active tab"}
-      </div>
+      <div className="pi-railcap">Final · active icon lit in its syrup, 2px bar, no dot</div>
       {DRAFT_RAIL.map((name) => {
         const active = name === "fountain";
-        const drop = withDrop === "all" || active;
         return (
           <div key={name} className={active ? "pi-railitem on" : "pi-railitem"}>
-            <span className="pi-iconwrap">
+            <span style={{ color: active ? RAIL_TINT[name] : undefined, display: "grid" }}>
               <DraftIcon name={name} size={20} />
-              {drop ? <span className="pi-drop"><RailDrop size={10} /></span> : null}
             </span>
             {name}
           </div>
@@ -93,8 +98,8 @@ export default function PreviewIcons() {
       <style>{CSS}</style>
       <h1>Shizuku — icon contact sheet</h1>
       <div className="pi-sub">
-        carved ice · 1.5 stroke · butt terminals · 24 grid · not wired into Icon.tsx ·
-        each card shows 16 / 24 / 48 px
+        carved ice · 1.5 stroke · butt terminals · 45° chamfers · one 30% facet per
+        glyph · not wired into Icon.tsx · 16 / 24 / 48 px
       </div>
 
       <h2>On ink (#0b0c0b)</h2>
@@ -115,23 +120,25 @@ export default function PreviewIcons() {
         </div>
       </div>
 
-      <h2>Rail variants · 20px icons, 11px labels</h2>
+      <h2>Rail · active tint per tab</h2>
       <div className="pi-railrow">
-        <Rail withDrop="all" />
-        <Rail withDrop="active" />
-        <div className="pi-railbox" style={{ width: 300 }}>
-          <div className="pi-railcap">Notes</div>
-          <div style={{ padding: "0 8px", fontSize: 11.5, color: "#93a1b1", lineHeight: 1.6 }}>
-            The drop is a placeholder ramune; in the app it becomes currentColor at
-            the tab's accent. Compare A (all seven) with B (active only) at 20px —
-            A is the version to beat for clutter.
+        <Rail />
+        <div style={{ flex: 1 }}>
+          <div className="pi-tints">
+            {DRAFT_RAIL.map((name) => (
+              <div key={name} className="pi-tint">
+                <span style={{ color: RAIL_TINT[name], display: "grid" }}>
+                  <DraftIcon name={name} size={20} />
+                </span>
+                {name}
+              </div>
+            ))}
+          </div>
+          <div className="pi-zoombar" style={{ marginTop: 16 }}>
+            <b>16px is the gate</b> for rail/header/action icons. Medal glyphs run at
+            ~60px in the app, so their 16px column is a stress test only.
           </div>
         </div>
-      </div>
-
-      <div className="pi-zoombar">
-        <b>16px is the gate:</b> any glyph that turns to mush there falls back to
-        rounded terminals individually, not as a set.
       </div>
     </div>
   );
