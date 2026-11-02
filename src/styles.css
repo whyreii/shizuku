@@ -10159,3 +10159,295 @@ kbd {
   letter-spacing: 0.02em;
   text-transform: none;
 }
+/* ==================================================================
+   Series page - a gallery you can wish and starwish from
+   ================================================================== */
+.preview-series {
+  min-height: 100vh;
+  padding: 24px 48px 44px;
+  background: var(--ink);
+}
+
+.preview-series-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  font-family: var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.preview-series-bar select {
+  width: 260px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #0d100d;
+  color: var(--paper);
+  font-family: var(--ui);
+  font-size: 12px;
+}
+
+.series-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.series-page-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.series-back {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-family: var(--ui);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.series-back:hover {
+  color: var(--frost);
+  border-bottom-color: var(--frost);
+}
+
+.series-back::before {
+  content: "\2190\00a0";
+}
+
+.series-page-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.series-page-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--paper);
+}
+
+.series-page-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.series-page-meta b {
+  font-family: "Bakbak One", var(--ui);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--paper);
+}
+
+.series-page-meta i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--line-hi);
+}
+
+.series-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 18px 12px;
+}
+
+.serie-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.serie-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.serie-art {
+  position: relative;
+  display: block;
+  aspect-ratio: 63 / 88;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d100d;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.serie-blank {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--serif);
+  font-size: 34px;
+  color: var(--line-hi);
+}
+
+.serie-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* missing cards keep their portrait but step back: it is a showcase, not a wall
+   of holes */
+.serie-card.is-missing .serie-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 12, 11, 0.62);
+  pointer-events: none;
+}
+
+.serie-card.is-picked .serie-art {
+  box-shadow:
+    inset 0 0 0 2px var(--frost),
+    inset 0 0 0 1px var(--line);
+}
+
+.serie-card.is-picked .serie-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(154, 217, 255, 0.12);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.serie-tier {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  z-index: 2;
+  padding: 1px 6px 2px;
+  border-radius: 3px;
+  background: rgba(11, 12, 11, 0.72);
+  font-family: "Bakbak One", var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--tier);
+}
+
+.serie-wished {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 2;
+  padding: 1px 6px 2px;
+  border-radius: 3px;
+  background: rgba(11, 12, 11, 0.72);
+  font-family: "Bakbak One", var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+/* the star sits on every card: an owned starwish is how you farm duplicates */
+.serie-star {
+  position: absolute;
+  right: 8px;
+  bottom: 46px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(11, 12, 11, 0.66);
+  color: rgba(233, 239, 230, 0.55);
+  cursor: pointer;
+  opacity: 0.55;
+  transition:
+    opacity 120ms ease,
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.serie-card:hover .serie-star,
+.serie-card:focus-within .serie-star {
+  opacity: 1;
+}
+
+.serie-star:hover {
+  color: var(--paper);
+  background: rgba(11, 12, 11, 0.85);
+}
+
+.serie-star.on {
+  opacity: 1;
+  color: var(--frost);
+  background: rgba(11, 12, 11, 0.85);
+}
+
+.serie-name {
+  font-family: var(--ui);
+  font-size: 12px;
+  color: var(--paper);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serie-meta {
+  font-family: "Bakbak One", var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.series-page-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.series-page-wishes {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.series-page-wishes b {
+  font-family: "Bakbak One", var(--ui);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--paper);
+}
+
+.series-page-foot .btn.primary {
+  flex: 0 0 auto;
+  width: auto;
+  margin-left: auto;
+  padding: 9px 16px;
+}
