@@ -10315,6 +10315,7 @@ kbd {
   cursor: pointer;
 }
 
+/* no keyline: the portrait is the edge, not a tile in a frame */
 .serie-art {
   position: relative;
   display: block;
@@ -10322,7 +10323,6 @@ kbd {
   border-radius: 10px;
   overflow: hidden;
   background: #0d100d;
-  box-shadow: inset 0 0 0 1px var(--line);
 }
 
 .serie-blank {
