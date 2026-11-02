@@ -39,14 +39,14 @@ is the currency.
 | P11 | Shop removal · derived power · daily relocated | ✅ |
 | P12 | Performance — bundle split, windowed lists, image pipeline | ✅ |
 | P13 | **Roster capture** — 6,225 live; full uncapped run pending | ⏳ |
-| P14 | Tower — 12 floors, +5,000 each | — |
-| P15 | Lootboxes | — |
-| P16 | Series index + per-series modal | — |
-| P17 | Wishes — series wish, boost | partial |
-| P18 | Media — 12 slots, galleries, GIFs | — |
-| P19 | Personalization — alias, notes, presets | state ready, no UI |
-| P20 | Settings knobs | — |
-| P21 | Progression UI | — |
+| P14 | Tower — 12 floors, +5,000 each | ✅ |
+| P15 | Lootboxes | ✅ |
+| P16 | Series index + per-series modal | ✅ |
+| P17 | Wishes — wishlist, starwish, boost, wish-a-series | ✅ |
+| P18 | Media — galleries live; 12 slots and GIFs never specified | partial |
+| P19 | Personalization — alias + note editor, image override | ✅ (presets not built) |
+| P20 | Settings knobs — novelty + save transport live | partial, rest unspecified |
+| P21 | Progression UI | unspecified |
 | P22 | Ship | — |
 
 ## Performance work (P12)
@@ -82,7 +82,7 @@ EXTRA_WEIGHT = (share / (1 - share)) × baseWeight / extraCount     // share = 0
 - Full roster capture not run yet (needs a clean cache; the current one is capped at
   60 characters per series).
 - No automated tests around economy constants.
-- Alias/note overrides exist in state but have no UI.
+- P18's media slots/GIFs and P21 were never specified, so they cannot be scoped.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.
 
 ## Out of scope
