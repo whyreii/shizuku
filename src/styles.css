@@ -9393,3 +9393,35 @@ kbd {
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* 2C-c: one frame, one weight. The S ring and its groove read as a heavy
+   outline on the stage card, so no tier carries an edge or inner line any
+   more: the 1px keyline at inset 6px is the only frame. Tier identity
+   stays in the chip, the starwish ring and the wish marks. */
+.card3d.tier-sp,
+.card3d.tier-s,
+.card3d.tier-a,
+.card3d.tier-b,
+.card3d.tier-c {
+  --edge-w: 0px;
+  --edge-c: transparent;
+  --inner-top: 0px;
+  --inner-bottom: 0px;
+  --inner-left: 0px;
+  --inner-right: 0px;
+}
+
+/* the A seam was the last tier-only frame mark; it goes with the rest */
+.card3d.tier-a .card3d-inner::after {
+  display: none;
+}
+
+/* the room followed the tier's hue: on S/S+ it threw a thick gold wash
+   above the card. Keep only the low tint under the plinth. */
+.shell::before {
+  background: radial-gradient(
+    100% 70% at 50% 112%,
+    color-mix(in srgb, var(--room, #1d2734) 20%, transparent),
+    transparent 62%
+  );
+}
