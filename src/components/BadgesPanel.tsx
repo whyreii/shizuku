@@ -12,7 +12,7 @@ import {
   formatKakera,
 } from "../engine/game";
 import type { BadgeKey, GameState } from "../engine/types";
-import { Icon } from "./Icon";
+import { Icon, type IconName } from "./Icon";
 
 interface Props {
   state: GameState;
@@ -29,61 +29,15 @@ const ORDER: BadgeKey[] = [
   "diamond",
 ];
 
-const GLYPHS: Record<BadgeKey, React.ReactNode> = {
-  /* sleet: a drop with a cutting diagonal */
-  bronze: (
-    <>
-      <path d="M12 3.5 16.4 8a6.2 6.2 0 1 1-8.8 0Z" />
-      <path d="m6.5 17.5 11-11" />
-    </>
-  ),
-  /* hail: three stones falling */
-  silver: (
-    <>
-      <circle cx="9" cy="8" r="2.1" />
-      <circle cx="15.5" cy="11.5" r="2.5" />
-      <circle cx="10" cy="16" r="1.8" />
-    </>
-  ),
-  /* glaze: a smooth poured surface */
-  gold: (
-    <>
-      <path d="M4 13.5c2.6-4 5.2-4 7.8 0s5.2 4 8.2 0" />
-      <path d="M4 18c2.6-4 5.2-4 7.8 0s5.2 4 8.2 0" opacity=".6" />
-      <path d="M12 3.5v5" />
-    </>
-  ),
-  /* frost: a six-arm crystal */
-  sapphire: (
-    <>
-      <path d="M12 3v18" />
-      <path d="m4.2 7.5 15.6 9" />
-      <path d="m19.8 7.5-15.6 9" />
-    </>
-  ),
-  /* blizzard: driving wind */
-  ruby: (
-    <>
-      <path d="M3.5 8h9.2a2.4 2.4 0 1 0-2.4-2.4" />
-      <path d="M3.5 12.5h13a2.2 2.2 0 1 1-2.2 2.2" />
-      <path d="M3.5 17h7" opacity=".6" />
-    </>
-  ),
-  /* glacier: a calved block */
-  emerald: (
-    <>
-      <path d="m3.5 19 5.5-11 3.4 6.2L15 8.5l5.5 10.5Z" />
-      <path d="M6.5 19h11" opacity=".5" />
-    </>
-  ),
-  /* aurora: three ribbons */
-  diamond: (
-    <>
-      <path d="M3.5 7.5c3-3 6 3 9 0s6-3 8 0" />
-      <path d="M3.5 12c3-3 6 3 9 0s6-3 8 0" opacity=".7" />
-      <path d="M3.5 16.5c3-3 6 3 9 0s6-3 8 0" opacity=".45" />
-    </>
-  ),
+/** The approved carved-ice glyphs, one per medal. */
+const MEDAL_ICON: Record<BadgeKey, IconName> = {
+  bronze: "sleet",
+  silver: "hail",
+  gold: "glaze",
+  sapphire: "frost",
+  ruby: "blizzard",
+  emerald: "glacier",
+  diamond: "aurora",
 };
 
 export function BadgesPanel({ state, act }: Props) {
@@ -127,18 +81,11 @@ export function BadgesPanel({ state, act }: Props) {
             >
               <span className="medal-shape">
                 <span className="medal-hex">
-                  <svg
+                  <Icon
+                    name={MEDAL_ICON[key]}
+                    size={56}
                     className="medal-glyph"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    {GLYPHS[key]}
-                  </svg>
+                  />
                 </span>
               </span>
               <span className="medal-notches">
