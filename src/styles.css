@@ -9916,6 +9916,7 @@ kbd {
 }
 /* numbers keep the display face: Zen Kaku's figures are proportional and jitter
    as they count, so every timer, counter and price stays in Bakbak One */
+.head-pill-text small,
 .head-pill-text span,
 .roll-meta span,
 .card-value,
