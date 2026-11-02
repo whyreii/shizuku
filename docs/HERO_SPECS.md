@@ -37,9 +37,7 @@ Colour stays a tier *edge*, never the only carrier of the frame.
 | `--t-beat` | `180ms` | a single beat |
 | `--t-settle` | `260ms` | stamp settle |
 
-House rule: **one loop in the app** — the active rail icon. Everything else is
-one-shot. Water waves are the only other exception, and they stop under reduced
-motion.
+House rule: **three loops, and only three** — the active rail icon, a claimable medal's pulse, and the fountain's water waves. Everything else is one-shot. Water and medal motion stop under reduced motion.
 
 ---
 
@@ -288,3 +286,23 @@ Deviations from §3, for the record:
 - The count keeps a visually hidden `basins filled` so the digits read as a
   sentence to a screen reader; the water, cuts and droplets are `aria-hidden`.
 - Ripple rings use literal easing — the motion tokens in §1 still do not exist.
+
+---
+
+## 13. B phases — motion, copy, type, sweep
+
+| Phase | State | Evidence |
+|---|---|---|
+| B1 motion | **shipped** `ab6e8a2` | tokens in `src/tokens.css`; turn 40°, per-tier turn 220 / 260 / 300 / 340ms, fade 180ms; S+ stamp at 560ms, sweep 380ms starting at 340ms, sparkles 5 × 60ms once. ROLL free at 300ms: a second press at 320ms, while the card still reported `reveal-turn`, took the meter 10 → 8. Reduced motion: card `animation-name: none`, 120ms fade, two presses 60ms apart both landed |
+| B2 copy | **shipped** `9455a40` | the 11 strings in `ART_DIRECTION` §7; `sealed / locked / built` kept as agreed |
+| B3 type | **shipped** `3c79288` | Zen Kaku Gothic New at 400 / 500 / 700 (900 is unused); Instrument Serif and Bakbak One kept; Archivo, Russo One, Kanit and Baloo 2 dropped from `index.html`. Numbers pinned to Bakbak: `.roll-meta span`, `.card-value`, `.tile-rank`, `.head-pill-text span`. Measured "shizuku" at 40px: Zen 127px, monospace 154px — the font is live, not a fallback |
+| B4 sweep | **verified** | 1440 and 1772 across all seven tabs: 0 text under 11px, no horizontal overflow, 0 colon-formatted times (`59m 47s` is the only format), 0 console errors, 0 `backdrop-filter` |
+
+Known limits:
+
+- Zen Kaku's Google CSS carries hundreds of unicode-range blocks. At three
+  weights it is still the largest stylesheet on the page, which the three dropped
+  families do not offset. Self-hosting the Latin subset (the 10 kB woff2 this doc
+  names) is the fix, if it ever matters.
+- Prose paragraphs in Settings still start with a capital where a sentence needs
+  one; §7 only ever covered the listed strings.
