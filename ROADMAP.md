@@ -15,10 +15,11 @@ is the currency.
 - Sinks in Mudae order: **badges → tower → loots → boosts**. The Shop tab is retired.
 - Badge tiers are ice: **Sleet · Hail · Glaze · Frost · Blizzard · Glacier · Aurora**.
 - Roster: hand-ranked 1,000 keep ranks 1–1000; AniList extras append by favourites.
-  **6,225 characters across 725 series are live**; a full uncapped capture (25k–50k)
-  is still pending.
-- Rarity: extras currently weigh 5 each. Before the full run they switch to a fixed
-  **40% share** of pool weight so the ladder cannot become unobtainable.
+  **50,845 characters are live** (full capture over 2,667 series).
+- Rarity: the raw rank ladder is in use. The fixed **40% extras share** was never
+  built, so with 49,845 extras the tail carries most of the weight and the top cards
+  are far rarer than the ladder intends — the share switch has to land before the
+  odds can be defended.
 - Shell: one column, hairline chrome, serif display + mono numbers; only cards round.
 
 ## Status
@@ -38,7 +39,7 @@ is the currency.
 | P10 | Badges — 7 ice tiers × IV | ✅ |
 | P11 | Shop removal · derived power · daily relocated | ✅ |
 | P12 | Performance — bundle split, windowed lists, image pipeline | ✅ |
-| P13 | **Roster capture** — 6,225 live; full uncapped run pending | ⏳ |
+| P13 | **Roster capture** — 50,845 live (1,000 hand-ranked + 49,845 extras over 2,667 series) | ✅ |
 | P14 | Tower — 12 floors, +5,000 each | ✅ |
 | P15 | Lootboxes | ✅ |
 | P16 | Series index + per-series modal | ✅ |
@@ -68,23 +69,18 @@ Next:
 ## Rarity
 
 The ladder is rank-based, not weighted per pool: `weightForRank(rank)` reads
-`poolPerCard(poolIndex(rank))`, and the pools normalise so the whole roster sums to
-exactly 100% (`totalWeight() = 1`). Growing the pool lowers every per-card chance
-and needs no weight change — the `EXTRA_WEIGHT` formula this section used to
-show was never built.
-
-| Pool | Top-10 card | Top-50 band |
-| ---- | ----------- | ----------- |
-| 1,000 (base) | 0.011% | 0.95% |
-| 6,225 (live) | 0.004% | ~0.34% |
-| ~40k (full) | ~0.0068% | ~0.6% |
+`poolPerCard(poolIndex(rank))`. It was tuned for a ~6k pool, where the pools cover the
+whole roster and sum to 100%. At 50,845 the last edge is 17,366, so 33,479 cards fall into
+the final pool on their own: the real weight sums to **320.86**, and a rank-1 card is
+about 1 in 16,000,000 rolls. The fixed 40% extras share is the fix; until it lands the
+odds lean heavily toward the tail.
 
 ## Known gaps
 
-- Full roster capture not run yet (needs a clean cache; the current one is capped at
-  60 characters per series).
+- The 40% extras share is not implemented, so the roll odds lean toward the tail
+  (see Rarity).
 - No automated tests around economy constants.
-- P22 needs a host; the P13 roster capture is the last data job.
+- P22 needs a host.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.
 
 ## Out of scope

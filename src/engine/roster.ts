@@ -134,6 +134,22 @@ function readExtras(payload: unknown): ExtraTuple[] {
   ]);
 }
 
+/**
+ * The hand-ranked list says "One Piece"; AniList titles come back "ONE PIECE".
+ * One series must not split into two rows, so the first spelling seen (the
+ * hand-written one) becomes canonical for every case-insensitive match.
+ */
+function unifySeriesNames(): void {
+  const canonical = new Map<string, string>();
+  for (const c of ROSTER) {
+    const key = c.series.toLowerCase();
+    if (!canonical.has(key)) canonical.set(key, c.series);
+  }
+  for (const c of ROSTER) {
+    const canon = canonical.get(c.series.toLowerCase());
+    if (canon && canon !== c.series) c.series = canon;
+  }
+}
 export async function loadExtraRoster(): Promise<void> {
   if (extraLoaded) return;
   try {
@@ -156,6 +172,7 @@ export async function loadExtraRoster(): Promise<void> {
       });
     }
     extraLoaded = true;
+    unifySeriesNames();
     reindex();
     for (const fn of listeners) fn();
   } catch {
