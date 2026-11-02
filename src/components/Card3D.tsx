@@ -17,6 +17,8 @@ interface CardProps {
   revealKey?: string;
   compact?: boolean;
   imageOverride?: string | null;
+  /** Double-tap / double-click on the card. Only the stage passes this. */
+  onActivate?: () => void;
 }
 
 export function Card3D({
@@ -31,6 +33,7 @@ export function Card3D({
   revealKey,
   compact = false,
   imageOverride,
+  onActivate,
 }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const raf = useRef(0);
@@ -102,6 +105,7 @@ export function Card3D({
         } ${starwish ? "is-starwish" : ""} ${soulmate ? "is-soulmate" : ""}`}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
+        onDoubleClick={onActivate}
       >
         <div className="card3d-inner">
           <div className="card3d-art">

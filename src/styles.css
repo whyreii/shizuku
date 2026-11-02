@@ -9370,3 +9370,26 @@ kbd {
     transition: none;
   }
 }
+
+/* claim is a double-tap on the card; this line carries the window state */
+.claim-status {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* a double-tap must claim, not zoom the page */
+.card3d {
+  touch-action: manipulation;
+}
+
+/* the card is an object, not a page: its text does not select or drag */
+.card-scene,
+.card-scene * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}

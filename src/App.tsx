@@ -198,6 +198,7 @@ const fileRef = useRef<HTMLInputElement>(null);
   const claimWait = claimReadyIn(state, now);
   const owned = state.current ? Boolean(state.owned[state.current.charId]) : false;
   const top3 = Boolean(current && current.rank <= 3);
+  const canClaim = windowOpen && !owned && !state.current?.claimed && claimWait <= 0;
   const recent = useMemo(
     () =>
       Object.values(state.owned)
@@ -221,14 +222,6 @@ const fileRef = useRef<HTMLInputElement>(null);
     : owned
       ? "You own this card — re-rolls pay crystals and shards."
       : null;
-  const claimHint =
-    !current || owned
-      ? null
-      : claimWait > 0
-        ? `Next claim in ${formatCountdown(claimWait)} · this window expires first.`
-        : windowOpen
-          ? "Claim it before the window closes."
-          : "Window closed.";
 
   return (
     <div
@@ -316,6 +309,7 @@ const fileRef = useRef<HTMLInputElement>(null);
               starwish={state.starwish === current.id}
               soulmate={state.soulmateId === current.id}
               revealKey={`${current.id}-${state.current?.rolledAt ?? 0}`}
+              onActivate={canClaim ? doClaim : undefined}
             />
 
             {state.crystal && crystalAlive > 0 ? (
@@ -351,34 +345,6 @@ const fileRef = useRef<HTMLInputElement>(null);
               </div>
             ) : null}
 
-            {windowOpen || claimWait > 0 ? (
-              <button
-                className={windowOpen ? "claim-action" : "claim-stamp"}
-                disabled={
-                  !windowOpen || owned || state.current?.claimed || claimWait > 0
-                }
-                onClick={doClaim}
-                aria-describedby={claimHint ? "claim-hint" : undefined}
-              >
-                {windowOpen ? (
-                  <i
-                    className="claim-fill"
-                    style={{ width: `${(remaining / CLAIM_WINDOW_MS) * 100}%` }}
-                  />
-                ) : null}
-                <b>{windowOpen ? "Claim" : "Claimed"}</b>
-                <span>
-                  {claimWait > 0
-                    ? formatCountdown(claimWait)
-                    : `${Math.ceil(remaining / 1000)}s`}
-                </span>
-                {claimHint ? (
-                  <span className="tip" role="tooltip" id="claim-hint">
-                    {claimHint}
-                  </span>
-                ) : null}
-              </button>
-            ) : null}
           </div>
         ) : (
           <div className="rest">
@@ -388,6 +354,19 @@ const fileRef = useRef<HTMLInputElement>(null);
           </div>
         )}
 
+        {current ? (
+          <p className="claim-status" aria-live="polite">
+            {canClaim
+              ? `double-tap the card to claim · ${Math.ceil(remaining / 1000)}s`
+              : owned
+                ? "already in your collection"
+                : state.current?.claimed
+                  ? "claimed"
+                  : claimWait > 0
+                    ? `claim in ${formatCountdown(claimWait)}`
+                    : "claim window closed"}
+          </p>
+        ) : null}
         <button
           className="roll-key"
           onClick={doRoll}
