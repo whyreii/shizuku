@@ -10321,7 +10321,7 @@ kbd {
   position: relative;
   display: block;
   aspect-ratio: 63 / 88;
-  border-radius: 0;
+  border-radius: 10px;
   overflow: hidden;
   background: #0d100d;
 }
@@ -10345,6 +10345,7 @@ kbd {
 
 /* missing cards keep their portrait but step back: it is a showcase, not a wall
    of holes */
+/* missing cards keep their colour and step back under a wash */
 .serie-card.is-missing .serie-art::after {
   content: "";
   position: absolute;
