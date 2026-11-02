@@ -240,7 +240,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
             <i style={{ width: `${Math.min(100, (starBoost - 1) * 100)}%` }} />
           </span>
           {star && starBoost > 1 ? (
-            <span className="plinth-mult">&#215;{starBoost.toFixed(2)}</span>
+            <span className="plinth-mult">+{Math.round((starBoost - 1) * 100)}%</span>
           ) : null}
         </div>
         </div>
@@ -250,7 +250,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
         <b>{state.wishes.length}</b>
         <i>/ {cap} wishes</i>
         {wishBoost > 1 ? (
-          <span>&#215;{wishBoost.toFixed(2)} on wishes</span>
+          <span>+{Math.round((wishBoost - 1) * 100)}% on wishes</span>
         ) : null}
       </div>
 
