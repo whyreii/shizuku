@@ -245,7 +245,7 @@ const fileRef = useRef<HTMLInputElement>(null);
             onClick={() => setTab(t)}
             aria-current={tab === t ? "page" : undefined}
           >
-            <Icon name={DOCK_ICON[t]} size={20} />
+            <Icon name={DOCK_ICON[t]} size={20} anim={tab === t} />
             {t}
           </button>
         ))}

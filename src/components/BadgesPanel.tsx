@@ -85,6 +85,7 @@ export function BadgesPanel({ state, act }: Props) {
                     name={MEDAL_ICON[key]}
                     size={56}
                     className="medal-glyph"
+                    anim={next}
                   />
                 </span>
               </span>
