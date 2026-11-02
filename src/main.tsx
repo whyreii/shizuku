@@ -11,8 +11,14 @@ const start = () => {
   const root = createRoot(document.getElementById("root")!);
   // Layout studies are opt-in and code-split, so they never weigh on the app.
   const preview = new URLSearchParams(window.location.search).get("preview");
-  if (preview === "v3" || preview === "v4") {
-    void import(preview === "v3" ? "./PreviewV3.tsx" : "./PreviewV4.tsx").then(
+  if (preview === "v3" || preview === "v4" || preview === "icons") {
+    void import(
+      preview === "v3"
+        ? "./PreviewV3.tsx"
+        : preview === "v4"
+          ? "./PreviewV4.tsx"
+          : "./PreviewIcons.tsx"
+    ).then(
       (mod) => {
         root.render(
           <StrictMode>

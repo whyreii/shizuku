@@ -68,7 +68,9 @@ Body text `#cdd9e5` (13.7:1 on A, 14.0:1 on B); muted `#a6b9cc` (9.7:1 / 10.0:1)
 
 **Rail drop:** the proposal adds a filled syrup drop at 20px. The contact sheet renders **two variants** — drop on all seven, and drop only on the active tab (2px frost bar stays in both). If the drop adds clutter at 20px, the fallback is no drop.
 
-**Contact sheet gate:** author in `src/iconDrafts.tsx` (not wired), render at **16 / 24 / 48px on ink and on frost**, plus the two rail variants, and wait for approval. If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
+**Contact sheet gate:** authored in `src/iconDrafts.tsx` (not wired), rendered at **16 / 24 / 48px on ink and on frost**, plus the two rail variants: `docs/icon-contact-sheet.png` (route `?preview=icons`). If any glyph is illegible at 16px, that glyph falls back to rounded terminals — not the whole set.
+
+![icon contact sheet](icon-contact-sheet.png)
 
 ## 4. Typography
 
