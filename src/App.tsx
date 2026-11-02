@@ -21,7 +21,11 @@ import {
   keyCap,
   keysFor,
   hydrate,
+  POOL_DEFAULT,
+  POOL_OPTIONS,
+  poolLabel,
   roll,
+  wishesOutsidePool,
   rollsPerReset,
   starwishBoostPercent,
   wishBoostPercent,
@@ -520,6 +524,35 @@ const fileRef = useRef<HTMLInputElement>(null);
           </div>
 
 
+          <div className="setting-row">
+            <span>Roll pool</span>
+            <div className="seg">
+              {POOL_OPTIONS.map((n) => (
+                <button
+                  key={n}
+                  className={
+                    "seg-btn " + ((state.poolCap ?? POOL_DEFAULT) === n ? "on" : "")
+                  }
+                  onClick={() => act((s) => ({ ...s, poolCap: n }))}
+                >
+                  {poolLabel(n)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="modal-text">
+            How deep into the ranked roster a roll can land. A smaller pool
+            brings your own cards back more often {"\u2014"} the same lever as
+            Mudae's limroul.
+            {wishesOutsidePool(state) > 0 ? (
+              <>
+                {" "}
+                {wishesOutsidePool(state)}{" "}
+                {wishesOutsidePool(state) === 1 ? "wished card sits" : "wished cards sit"}{" "}
+                past it.
+              </>
+            ) : null}
+          </p>
           <div className="setting-row">
             <span>Novelty</span>
             <div className="seg">

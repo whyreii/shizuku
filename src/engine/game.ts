@@ -12,7 +12,7 @@ import type {
   Upgrades,
   WishPreset,
 } from "./types";
-import { ROSTER, characterById, rankValue } from "./roster";
+import { ROSTER, ROSTER_SIZE, characterById, rankValue } from "./roster";
 import { clampShifts, tierForRank, weightForRank } from "./tiers";
 
 /* ------------------------------------------------------------------ *
@@ -38,6 +38,42 @@ export const ROLL_TIMER_ENABLED = true;
 
 export const TOWER_BASE_COST = 5000;
 export const TOWER_FLOORS = 12;
+
+/**
+ * Roll pool. The draw is uniform, so the pool size is the only lever on how
+ * often your own cards come back: Mudae's limroul. 0 means the whole roster.
+ */
+export const POOL_OPTIONS = [1000, 5000, 10000, 0];
+export const POOL_DEFAULT = 5000;
+
+/** How many top-ranked characters a roll can land on. */
+export function rollableCap(state: GameState): number {
+  const size = ROSTER_SIZE();
+  const cap = Math.round(state.poolCap ?? 0);
+  if (!Number.isFinite(cap) || cap <= 0) return size;
+  return Math.max(1, Math.min(size, cap));
+}
+
+/** Short label for the pool control. */
+export function poolLabel(cap: number): string {
+  if (!cap || cap <= 0) return "All";
+  return Math.round(cap / 1000) + "k";
+}
+
+/** Wishes and the starwish that sit past the cap can never roll. */
+export function wishesOutsidePool(state: GameState): number {
+  const cap = rollableCap(state);
+  let out = 0;
+  for (const id of state.wishes) {
+    const char = characterById(id);
+    if (char && char.rank > cap) out += 1;
+  }
+  if (state.starwish) {
+    const star = characterById(state.starwish);
+    if (star && star.rank > cap) out += 1;
+  }
+  return out;
+}
 
 export interface TowerPerk {
   id: number;
@@ -665,6 +701,7 @@ export function createInitialState(now: number): GameState {
     tower: { ...EMPTY_TOWER, perks: [] },
     lastDailyAt: 0,
     novelty: NOVELTY_MAX,
+    poolCap: POOL_DEFAULT,
     wishBoost: 0,
     wishBoostAt: 0,
     overrides: {},
@@ -717,6 +754,7 @@ export function hydrate(raw: Partial<GameState> & Record<string, unknown>): Game
     badges,
     tower: { ...EMPTY_TOWER, ...((raw.tower as GameState["tower"]) ?? {}), perks: ((raw.tower as GameState["tower"])?.perks ?? []).slice() },
     lastDailyAt: typeof raw.lastDailyAt === "number" ? raw.lastDailyAt : 0,
+    poolCap: typeof raw.poolCap === "number" ? (raw.poolCap as number) : base.poolCap,
     presets: readPresets(raw.presets),
   overrides: (raw.overrides as Record<string, Override>) ?? {},
     stats: (raw.stats as GameState["stats"]) ?? { rolls: 0, claims: 0, keys: 0 },
@@ -902,6 +940,7 @@ export function roll(prev: GameState, now: number): RollResult {
 
   const members = ROSTER;
   if (members.length === 0) throw new GameError("Roster is empty.");
+  const cap = rollableCap(prev);
 
   const shifts = rarityShifts(prev);
   let targetId: string | null = null;
@@ -916,7 +955,10 @@ export function roll(prev: GameState, now: number): RollResult {
   const starBoost = starwishMultiplier(prev);
 
   let total = 0;
+  let lastInPool = members[0];
   for (const c of members) {
+    if (c.rank > cap) continue;
+    lastInPool = c;
     let weight = weightForRank(c.rank, shifts);
     if (prev.owned[c.id]) weight *= novelty;
     if (starId && c.id === starId) weight *= starBoost;
@@ -924,8 +966,9 @@ export function roll(prev: GameState, now: number): RollResult {
     total += weight;
   }
   let draw = Math.random() * total;
-  targetId = members[members.length - 1].id;
+  targetId = lastInPool.id;
   for (const c of members) {
+    if (c.rank > cap) continue;
     let weight = weightForRank(c.rank, shifts);
     if (prev.owned[c.id]) weight *= novelty;
     if (starId && c.id === starId) weight *= starBoost;

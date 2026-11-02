@@ -16,10 +16,9 @@ is the currency.
 - Badge tiers are ice: **Sleet · Hail · Glaze · Frost · Blizzard · Glacier · Aurora**.
 - Roster: hand-ranked 1,000 keep ranks 1–1000; AniList extras append by favourites.
   **50,845 characters are live** (full capture over 2,667 series).
-- Rarity: the raw rank ladder is in use. The fixed **40% extras share** was never
-  built, so with 49,845 extras the tail carries most of the weight and the top cards
-  are far rarer than the ladder intends — the share switch has to land before the
-  odds can be defended.
+- Rarity: the draw is **uniform** — every rollable card is `1 / pool size`. Rarity
+  comes from the **roll pool** (Mudae's `$limroul`): top 1,000 / 5,000 / 10,000, or
+  the whole roster. A tier sets a card's **value**, never its odds.
 - Shell: one column, hairline chrome, serif display + mono numbers; only cards round.
 
 ## Status
@@ -68,19 +67,37 @@ Next:
 
 ## Rarity
 
-The ladder is rank-based, not weighted per pool: `weightForRank(rank)` reads
-`poolPerCard(poolIndex(rank))`. It was tuned for a ~6k pool, where the pools cover the
-whole roster and sum to 100%. At 50,845 the last edge is 17,366, so 33,479 cards fall into
-the final pool on their own: the weights sum to **320.86** instead of 100, so every card
-is 3.2× likelier than its printed percentage. Drawing is weighted (`w / total`), so the
-real odds today run from **1 in 161,000 at rank 1 to 1 in 48,600 at rank 50,845** — a
-spread of only 3.3×, which is why the ladder reads as flat. The fixed 40% extras share is
-the fix: it puts rank 1 at 1 in 3,000 and rank 50,845 at 1 in 120,000.
+Uniform draw: every character you can roll has the same chance, `1 / pool size`.
+That is Mudae's model — a tier sets a card's **value**, never its odds. There is no
+rank ladder in the weighting, so the old denominator bug (`poolSize` counting 6,366
+where `poolIndex` routed 33,479) is gone with it.
+
+Rarity comes from the pool filter (`poolCap` in Settings, the `$limroul` lever): roll
+only the top N of the ranked roster. It is not cosmetic. Income is `total keys × 12`
+and keys come from rolling cards you already own, so the pool size sets how often
+your collection repeats:
+
+| roll pool | keys, 30 days | duplicate rolls | crystals | value payouts | income/hr |
+| --------- | ------------- | --------------- | -------- | ------------- | --------- |
+| 1,000     | 1,198         | 385             | 167      | 55            | 14,733    |
+| 5,000     | 548           | 67              | 28       | 2             | 6,738     |
+| 10,000    | 431           | 30              | 13       | 0             | 5,301     |
+| 50,845    | 368           | 5               | 1        | 0             | 4,524     |
+
+30 days at 10 rolls/hour, 12 claims/day, novelty 4 — simulated against the real
+constants. The whole roster still works; it just becomes a claim-only loop where
+crystals, L6 payouts and key levels never fire. **5,000 is the default.**
+
+Wishes on characters past the pool can never roll; the settings copy says how many.
+
+Rarity shifts (four badges + the fountain lens) nudge S+ by +10% and S by +5% per
+shift. They used to add percentage points to a pool ladder; uniform weights make
+percentage points meaningless, so they are multipliers now.
 
 ## Known gaps
 
-- The 40% extras share is not implemented, so the ladder reads flat: rank 1 is only
-  **3.3× rarer** than the last card instead of the intended ~40× (see Rarity).
+- The pool filter is a settings knob, not a progression reward yet: Mudae lowers
+  `$limroul` with tower floors and kakera loots.
 - No automated tests around economy constants.
 - P22: host chosen (Cloudflare Pages, unlimited bandwidth); deployment deferred by the owner.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.

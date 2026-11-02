@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal } from "./Modal";
 import { bandTable, tierClass } from "../engine/tiers";
-import { rarityShifts } from "../engine/game";
+import { rarityShifts, rollableCap } from "../engine/game";
 import { sections } from "./helpSections";
 import type { GameState } from "../engine/types";
 import { getCoverage } from "../engine/images";
@@ -59,7 +59,7 @@ export function HelpFab({ state }: { state: GameState }) {
                   <span>per card</span>
                   <span>band total</span>
                 </div>
-                {bandTable(rarityShifts(state)).map((row) => (
+                {bandTable(rarityShifts(state), rollableCap(state)).map((row) => (
                   <div className="rate-row" key={row.label}>
                     <span className={`mini-tier ${tierClass(row.tier)}`}>
                       {row.tier}

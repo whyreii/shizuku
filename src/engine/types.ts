@@ -109,6 +109,8 @@ export interface GameState {
   lastDailyAt: number;
   /** 1-4: how often your own cards are held back. 4 = 4x rarer (Mudae parity). */
   novelty: number;
+  /** Highest rank a roll can land on. 0 = the whole roster (Mudae's limroul). */
+  poolCap: number;
   /** Rolls per hour spent on wish spawn chance. */
   wishBoost: number;
   /** When the boost was last lowered (12h cooldown). */
