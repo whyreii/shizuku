@@ -589,6 +589,7 @@ textarea:focus {
   --inner-left-c: transparent;
   --inner-right: 0px;
   --inner-right-c: transparent;
+  border-radius: 18px;
   box-shadow: 0 0 0 var(--edge-w) var(--edge-c);
 }
 
