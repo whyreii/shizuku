@@ -442,10 +442,10 @@ export function wishCap(state: GameState): number {
 }
 
 /* ------------------------------------------------------------------ *
- * Wish presets: named lineups, five at most
+ * Wish presets: named lineups, two at most
  * ------------------------------------------------------------------ */
 
-export const MAX_PRESETS = 5;
+export const MAX_PRESETS = 2;
 const PRESET_NAME_MAX = 24;
 
 /** Validates saved presets on load: unknown ids and junk entries are dropped. */
@@ -483,7 +483,7 @@ export function savePreset(prev: GameState, name: string): GameState {
     (p) => p.name.toLowerCase() === label.toLowerCase(),
   );
   if (index < 0 && prev.presets.length >= MAX_PRESETS) {
-    throw new GameError(`Five presets is the limit - delete one first.`);
+    throw new GameError(`Two presets is the limit - delete one first.`);
   }
   const preset: WishPreset = {
     id: index >= 0 ? prev.presets[index].id : `p${Date.now().toString(36)}`,

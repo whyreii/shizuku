@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import {
+  MAX_PRESETS,
   applyPreset,
   deletePreset,
   divorce,
@@ -15,6 +16,7 @@ import { ROSTER, characterAtRank, characterById, seriesIndex } from "../engine/r
 import { tierClass, tierForRank } from "../engine/tiers";
 import { PlinthArt } from "./EmptyArt";
 import { usePortrait } from "../engine/images";
+import { Icon } from "./Icon";
 import { CharacterSheet } from "./CharacterSheet";
 import { SeriesSheet } from "./SeriesSheet";
 import { Tile } from "./Tile";
@@ -24,6 +26,7 @@ import type { Character, GameState, SortKey } from "../engine/types";
 interface PanelProps {
   state: GameState;
   act: (fn: (s: GameState, now: number) => GameState) => GameState | null;
+  notify?: (text: string, tone?: "good" | "warn") => void;
 }
 
 export function CollectionPanel({
@@ -182,7 +185,7 @@ function CardFace({ char }: { char: Character }) {
   );
 }
 
-export function WishlistPanel({ state, act }: PanelProps) {
+export function WishlistPanel({ state, act, notify }: PanelProps) {
   const { ask, dialog } = useConfirm();
   const cap = wishCap(state);
   const star = state.starwish ? characterById(state.starwish) : undefined;
@@ -203,14 +206,37 @@ export function WishlistPanel({ state, act }: PanelProps) {
       p.wishes.every((id) => state.wishes.includes(id)),
   );
 
+  const nextFreeSlot = state.presets.length < MAX_PRESETS;
+
   const commitPreset = () => {
     const name = draft.trim();
     if (!name) return;
+    const existed = state.presets.some(
+      (p) => p.name.toLowerCase() === name.toLowerCase(),
+    );
     const next = act((s) => savePreset(s, name));
-    if (next) {
-      setNaming(false);
-      setDraft("");
-    }
+    if (!next) return; // the cap error is already flashed by act()
+    setNaming(false);
+    setDraft("");
+    notify?.(existed ? `updated ${name}` : `saved ${name}`, "good");
+  };
+
+  const apply = (preset: (typeof state.presets)[number]) => {
+    const next = act((s) => applyPreset(s, preset.id));
+    if (!next) return;
+    const fit = next.wishes.length;
+    const wanted = preset.wishes.length;
+    notify?.(
+      fit < wanted
+        ? `applied ${preset.name} - ${fit} of ${wanted} wishes fit`
+        : `applied ${preset.name}`,
+      fit < wanted ? "warn" : "good",
+    );
+  };
+
+  const remove = (preset: (typeof state.presets)[number]) => {
+    const next = act((s) => deletePreset(s, preset.id));
+    if (next) notify?.(`deleted ${preset.name}`, "good");
   };
 
   const makeStar = (c: Character) => {
@@ -278,34 +304,51 @@ export function WishlistPanel({ state, act }: PanelProps) {
         ) : null}
       </div>
 
-      <div className="preset-row">
+      <div className="preset-row" role="group" aria-label="wish presets">
         <span className="preset-label">presets</span>
+        <span className="preset-counter">
+          {state.presets.length} / {MAX_PRESETS}
+        </span>
 
-        {state.presets.map((preset) => (
-          <span
-            key={preset.id}
-            className={preset.id === activePreset?.id ? "preset-chip on" : "preset-chip"}
-          >
-            <button
-              type="button"
-              className="preset-apply"
-              title={`apply ${preset.name} - ${preset.wishes.length} wishes`}
-              onClick={() => act((s) => applyPreset(s, preset.id))}
+        {state.presets.map((preset) => {
+          const active = preset.id === activePreset?.id;
+          return (
+            <span
+              key={preset.id}
+              className={active ? "preset-chip on" : "preset-chip"}
             >
-              {preset.name}
-              <i>{preset.wishes.length}</i>
-            </button>
-            <button
-              type="button"
-              className="preset-del"
-              title={`delete ${preset.name}`}
-              aria-label={`delete ${preset.name}`}
-              onClick={() => act((s) => deletePreset(s, preset.id))}
-            >
-              
-×
-            </button>
-          </span>
+              <button
+                type="button"
+                className="preset-apply"
+                aria-current={active ? "true" : undefined}
+                title={`apply ${preset.name} - ${preset.wishes.length} wishes${
+                  preset.starwish ? " and a starwish" : ""
+                }`}
+                onClick={() => apply(preset)}
+              >
+                {preset.starwish ? (
+                  <span className="preset-star" aria-hidden="true">
+                    <Icon name="star" size={11} />
+                  </span>
+                ) : null}
+                <span className="preset-name">{preset.name}</span>
+                <i>{preset.wishes.length}</i>
+              </button>
+              <button
+                type="button"
+                className="preset-del"
+                aria-label={`delete ${preset.name}`}
+                title={`delete ${preset.name}`}
+                onClick={() => remove(preset)}
+              >
+                Ã—
+              </button>
+            </span>
+          );
+        })}
+
+        {Array.from({ length: MAX_PRESETS - state.presets.length }).map((_, i) => (
+          <span key={`slot-${i}`} className="preset-slot" aria-hidden="true" />
         ))}
 
         {naming ? (
@@ -315,7 +358,7 @@ export function WishlistPanel({ state, act }: PanelProps) {
               className="preset-input"
               value={draft}
               maxLength={24}
-              placeholder="name"
+              placeholder="name this lineup"
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Enter") commitPreset();
@@ -334,17 +377,17 @@ export function WishlistPanel({ state, act }: PanelProps) {
               save
             </button>
           </span>
-        ) : (
+        ) : nextFreeSlot ? (
           <button
             type="button"
             className="preset-add"
+            title="save the wishes on the plinth as a lineup"
             onClick={() => setNaming(true)}
           >
-            save current
+            save lineup
           </button>
-        )}
+        ) : null}
       </div>
-
       {others.length === 0 && !star ? (
         <div className="wish-empty">
           <PlinthArt />

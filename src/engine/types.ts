@@ -115,7 +115,7 @@ export interface GameState {
   wishBoostAt: number;
   /** Pre-rolled kakigori for the current daily cycle. */
   dailyRoll: number;
-  /** Saved wish lineups: five at most. */
+  /** Saved wish lineups: two at most. */
   presets: WishPreset[];
   overrides: Record<string, Override>;
   stats: { rolls: number; claims: number; keys: number };

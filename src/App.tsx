@@ -443,7 +443,7 @@ const fileRef = useRef<HTMLInputElement>(null);
               actUndo={actWithUndo}
             />
           ) : null}
-          {tab === "Wishes" ? <WishlistPanel state={state} act={act} /> : null}
+          {tab === "Wishes" ? <WishlistPanel state={state} act={act} notify={notify} /> : null}
           {tab === "Medals" ? <BadgesPanel state={state} act={act} /> : null}
           {tab === "Fountain" ? <TowerPanel state={state} act={act} /> : null}
           {tab === "Loot" ? <LootPanel state={state} act={act} /> : null}
