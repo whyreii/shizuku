@@ -17,6 +17,23 @@ interface Props {
   act: (fn: (s: GameState, now: number) => GameState) => GameState | null;
 }
 
+/** What each basin buys, so thirteen identical tiles can be told apart. */
+const PERK_KIND: Record<number, string> = {
+  1: "wishes",
+  2: "wishes",
+  3: "crystals",
+  4: "keys",
+  5: "crystals",
+  6: "claims",
+  7: "income",
+  8: "claims",
+  9: "income",
+  10: "crystals",
+  11: "rolls",
+  12: "cosmetic",
+  13: "odds",
+};
+
 export function TowerPanel({ state, act }: Props) {
   const { ask, dialog } = useConfirm();
   const cost = towerCost(state);
@@ -151,6 +168,7 @@ export function TowerPanel({ state, act }: Props) {
                 <span className="perk-ring" key={bought.n} aria-hidden="true" />
               ) : null}
               <span className="perk-num">{perk.id}</span>
+              <span className="perk-kind">{PERK_KIND[perk.id] ?? "effect"}</span>
               <span className="perk-label">{perk.label}</span>
               <span className="perk-blurb">{perk.blurb}</span>
               <span className="perk-price">

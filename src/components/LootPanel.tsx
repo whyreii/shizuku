@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   BADGE_DEFS,
   LOOT_COST,
+  LOOT_KINDS,
   formatKakera,
   lootGate,
   openLoot,
@@ -15,8 +16,20 @@ interface Props {
   act: (fn: (s: GameState, now: number) => GameState) => GameState | null;
 }
 
+/** Readable names for the reward categories a loot can pay out. */
+const KIND_LABEL: Record<string, string> = {
+  kakigori: "kakigori",
+  rolls: "rolls",
+  claim: "claim reset",
+  crystal: "crystals",
+  shard: "shards",
+};
+
 export function LootPanel({ state, act }: Props) {
   const gate = lootGate(state);
+  const reqKeys = ["sapphire", "ruby", "emerald"] as const;
+  const met = reqKeys.filter((key) => state.badges[key] >= 1).length;
+  const inside = LOOT_KINDS.map((kind) => KIND_LABEL[kind] ?? kind).join(" \u00B7 ");
   const [results, setResults] = useState<LootReward[]>([]);
 
   const open = (count: number) => {
@@ -33,13 +46,16 @@ export function LootPanel({ state, act }: Props) {
         <h2 className="panel-title">Loot</h2>
         <div className="loot-box is-locked">
           <span className="loot-seal" aria-hidden="true" />
-          <Icon name="loot" size={38} />
+          <Icon name="loot" size={64} />
           <span className="loot-lock">
             <b>Sealed</b>
             <i>raise Frost, Blizzard and Glacier to Lv 1</i>
           </span>
+          <span className="loot-count">
+            {met} / 3 <i>requirements</i>
+          </span>
           <ul className="loot-req">
-            {(["sapphire", "ruby", "emerald"] as const).map((key) => (
+            {reqKeys.map((key) => (
               <li
                 key={key}
                 className={state.badges[key] >= 1 ? "on" : ""}
@@ -49,6 +65,7 @@ export function LootPanel({ state, act }: Props) {
               </li>
             ))}
           </ul>
+          <p className="loot-contains">contains {inside}</p>
         </div>
       </div>
     );
@@ -59,9 +76,10 @@ export function LootPanel({ state, act }: Props) {
       <h2 className="panel-title">Loot</h2>
       <div className="loot-box">
         <span className="loot-glow" aria-hidden="true" />
-        <Icon name="loot" size={38} />
+        <Icon name="loot" size={64} />
         <span className="loot-price">{formatKakera(LOOT_COST)}</span>
       </div>
+      <p className="loot-contains">contains {inside}</p>
 
       <div className="loot-keys">
         <button

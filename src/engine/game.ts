@@ -1229,6 +1229,11 @@ const LOOT_TABLE: { weight: number; reward: () => LootReward; apply: (s: GameSta
 
 const LOOT_WEIGHT_TOTAL = LOOT_TABLE.reduce((sum, entry) => sum + entry.weight, 0);
 
+/** Reward categories a loot can pay out, for the sealed preview. */
+export const LOOT_KINDS: string[] = [
+  ...new Set(LOOT_TABLE.map((entry) => entry.reward().kind)),
+];
+
 export function openLoot(prev: GameState, count = 1): { state: GameState; rewards: LootReward[] } {
   const gate = lootGate(prev);
   if (gate) throw new GameError(gate);

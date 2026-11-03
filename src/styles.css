@@ -10862,3 +10862,120 @@ kbd {
 .serie-meta {
   padding-right: 24px;
 }
+
+/* ==================================================================
+ Wave 1: the basin reads as an object, and loot gets a hero
+ ================================================================== */
+
+/* a rim and a lit inner wall, so the bowl separates from the page */
+.basin-shell {
+  box-shadow:
+    inset 0 0 0 1px rgba(214, 240, 255, 0.22),
+    inset 0 -34px 64px -34px rgba(154, 217, 255, 0.5),
+    inset 0 14px 34px -20px rgba(255, 255, 255, 0.2);
+}
+
+/* a dry bowl still shows where the water line sits */
+.basin.is-dry .basin-scene::after {
+  content: "";
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: 42%;
+  border-top: 1px dashed rgba(154, 217, 255, 0.34);
+}
+
+.basin.is-dry .basin-tier,
+.basin.is-dry .basin-count {
+  opacity: 0.62;
+}
+
+/* rim cuts stay readable on an empty bowl */
+.basin-ticks i {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* --- perk tiles: say what they buy, and show the three states ----- */
+.perk-kind {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.perk-tile.can {
+  box-shadow: inset 0 0 0 1px rgba(255, 217, 138, 0.45);
+}
+
+.perk-tile.can .perk-price {
+  color: #ffd98a;
+}
+
+.perk-tile.poor .perk-price {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.perk-tile.spent {
+  opacity: 0.6;
+}
+
+.perk-tile.spent .perk-label {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* --- loot: a bigger box, a counted gate, and what is inside ------ */
+.loot-box {
+  min-height: 240px;
+}
+
+.loot-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: "Bakbak One", var(--ui);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--paper);
+}
+
+.loot-count i {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.loot-req li {
+  position: relative;
+}
+
+.loot-req li.on::before {
+  content: "\2713";
+  margin-right: 6px;
+  color: var(--good);
+}
+
+.loot-contains {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+/* the sealed box gets a stamped ring behind the chest */
+.loot-box.is-locked::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed rgba(154, 217, 255, 0.22);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.loot-box svg {
+  opacity: 1;
+}
