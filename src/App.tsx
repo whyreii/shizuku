@@ -439,7 +439,9 @@ const fileRef = useRef<HTMLInputElement>(null);
               : `${state.rolls} of ${rollsPerReset(state)} this hour`}
           </span>
           <span>
-            next roll in {formatCountdown(state.nextResetAt - now)}
+            {state.rolls >= rollsPerReset(state)
+              ? "full"
+              : "next roll in " + formatCountdown(state.nextResetAt - now)}
           </span>
         </div>
 
@@ -543,8 +545,8 @@ const fileRef = useRef<HTMLInputElement>(null);
           <p className="modal-text">
             Your pool is the top {poolNow.toLocaleString("en-US")} of the ranked
             roster{bypassText}{" "}
-            Mudae's limroul, fixed at 7,000 {"\u2014"} every card in it is
-            equally likely.
+            Every card in it is equally likely {"\u2014"} there are no tiers in the
+            draw.
           </p>
           <div className="rates">
             <div className="rates-head">

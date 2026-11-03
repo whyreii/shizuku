@@ -1843,10 +1843,10 @@ textarea:focus {
 
 .tile-star {
   position: absolute;
-  right: 6px;
-  bottom: 6px;
-  width: 18px;
-  height: 18px;
+  right: 3px;
+  bottom: 3px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -5634,21 +5634,7 @@ kbd {
   width: 100%;
 }
 
-/* the clip hides the hex, so the glow lives on the wrapper */
-.medal.lit .medal-shape {
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--badge) 55%, transparent));
-}
-
-.medal.ready .medal-shape {
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--badge) 80%, transparent));
-  animation: medal-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes medal-pulse {
-  50% {
-    filter: drop-shadow(0 0 22px color-mix(in srgb, var(--badge) 95%, transparent));
-  }
-}
+/* medals read by rim and notches only: no glow, no pulse */
 
 .medal-hex {
   position: relative;
@@ -6024,7 +6010,7 @@ kbd {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(154, 217, 255, 0.35);
+  color: var(--muted);
 }
 
 /* the boost is etched into the base */
@@ -6142,10 +6128,10 @@ kbd {
 
 .wish-x {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 18px;
-  height: 18px;
+  top: -9px;
+  right: -9px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   border: 0;
@@ -6225,7 +6211,7 @@ kbd {
 
 .loot-box.is-locked {
   height: 150px;
-  color: rgba(154, 217, 255, 0.35);
+  color: var(--muted);
   background: linear-gradient(165deg, #141d28, #0a1017);
 }
 
@@ -6648,7 +6634,6 @@ kbd {
 
 /* the pulse was a 22px blur: it bled over two neighbours and read as a smear */
 .medal.ready .medal-shape {
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--badge) 45%, transparent));
   animation: none;
 }
 
@@ -6656,9 +6641,6 @@ kbd {
   box-shadow: inset 0 0 0 1px rgba(255, 217, 138, 0.7);
 }
 
-.medal.lit .medal-shape {
-  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--badge) 30%, transparent));
-}
 
 /* ==================================================================
    E2: wishes - the plinth stops smearing into the page
@@ -6934,7 +6916,7 @@ kbd {
 }
 
 .medal.locked .medal-glyph {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .medal-hex::after {
@@ -7221,7 +7203,7 @@ kbd {
 }
 
 .medal.locked .medal-glyph {
-  color: rgba(255, 255, 255, 0.34);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .medal.ready .medal-glyph {
@@ -8044,20 +8026,7 @@ kbd {
   box-shadow: 0 0 8px color-mix(in srgb, var(--badge, #fff) 70%, transparent);
 }
 
-@keyframes medal-pulse {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 4px rgba(247, 198, 103, 0.45));
-  }
-  50% {
-    filter: drop-shadow(0 0 10px rgba(247, 198, 103, 0.85));
-  }
-}
-
-.medal.ready .medal-shape {
-  filter: drop-shadow(0 0 6px rgba(247, 198, 103, 0.6));
-  animation: medal-pulse 2.2s ease-in-out infinite;
-}
+/* the affordable rim is a gradient only: no glow, no pulse */
 
 /* --- fountain: a basin with water and a wave -------------------------- */
 .basin {
@@ -8575,7 +8544,7 @@ kbd {
 }
 
 .medal.locked .medal-glyph {
-  color: rgba(255, 255, 255, 0.32);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 /* ==================================================================

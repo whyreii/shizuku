@@ -1456,6 +1456,14 @@ export function formatCompact(value: number): string {
   return n.toLocaleString("en-US");
 }
 
+/** Explicit date, no locale guessing: 2 Nov 2026. */
+export function formatDate(value: number | string | Date): string {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+}
+
 /** Minutes only — stops the header ticking every second. */
 export function formatMinutes(ms: number): string {
   if (ms <= 0) return "READY";

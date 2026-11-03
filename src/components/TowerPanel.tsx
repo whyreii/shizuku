@@ -100,7 +100,7 @@ export function TowerPanel({ state, act }: Props) {
 
           <div className="basin-floor">
             <span className="basin-tier">
-              <i>tier</i>
+              <i>floor</i>
               {tier}
             </span>
             <span className="basin-count">

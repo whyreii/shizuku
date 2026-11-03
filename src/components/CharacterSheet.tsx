@@ -13,7 +13,7 @@ import {
   toggleWish,
 } from "../engine/game";
 import { rankValue } from "../engine/roster";
-import { setOverride } from "../engine/game";
+import { formatDate, setOverride } from "../engine/game";
 import { usePortrait } from "../engine/images";
 import { fetchGallery, isPlaceholderPortrait } from "../engine/images";
 import type { Character, GameState } from "../engine/types";
@@ -170,7 +170,7 @@ export function CharacterSheet({ state, char, act, onDivorce, onClose }: Props) 
       title={alias ?? char.name}
       subtitle={`${char.series}${
         claimedAt
-          ? ` · claimed ${new Date(claimedAt).toLocaleDateString()}`
+          ? ` · claimed ${formatDate(claimedAt)}`
           : ""
       }`}
       onClose={onClose}
