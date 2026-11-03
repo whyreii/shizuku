@@ -10979,3 +10979,41 @@ kbd {
 .loot-box svg {
   opacity: 1;
 }
+
+/* the chest is the hero: frost on the sealed box, full paper when open */
+.loot-chest {
+  display: block;
+  color: var(--frost);
+}
+
+.loot-box.is-locked .loot-chest {
+  color: rgba(154, 217, 255, 0.85);
+}
+
+.loot-box:not(.is-locked) .loot-chest {
+  color: var(--paper);
+}
+
+/* the chest is centred: this is the hero of the tab, not a list row */
+.loot-box.is-locked,
+.loot-box:not(.is-locked) {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 26px 20px;
+  text-align: center;
+}
+
+.loot-box .loot-lock {
+  align-items: center;
+  text-align: center;
+}
+
+.loot-box .loot-req {
+  justify-content: center;
+}
+
+.loot-box .loot-contains {
+  text-align: center;
+}

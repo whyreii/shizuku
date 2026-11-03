@@ -8,7 +8,7 @@ import {
   openLoot,
   type LootReward,
 } from "../engine/game";
-import { Icon } from "./Icon";
+import { LootChest } from "./LootChest";
 import type { GameState } from "../engine/types";
 
 interface Props {
@@ -46,7 +46,7 @@ export function LootPanel({ state, act }: Props) {
         <h2 className="panel-title">Loot</h2>
         <div className="loot-box is-locked">
           <span className="loot-seal" aria-hidden="true" />
-          <Icon name="loot" size={64} />
+          <LootChest size={132} sealed />
           <span className="loot-lock">
             <b>Sealed</b>
             <i>raise Frost, Blizzard and Glacier to Lv 1</i>
@@ -76,7 +76,7 @@ export function LootPanel({ state, act }: Props) {
       <h2 className="panel-title">Loot</h2>
       <div className="loot-box">
         <span className="loot-glow" aria-hidden="true" />
-        <Icon name="loot" size={64} />
+        <LootChest size={132} />
         <span className="loot-price">{formatKakera(LOOT_COST)}</span>
       </div>
       <p className="loot-contains">contains {inside}</p>
