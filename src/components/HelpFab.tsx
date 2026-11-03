@@ -59,7 +59,7 @@ export function HelpFab({ state }: { state: GameState }) {
                   <span>per card</span>
                   <span>band total</span>
                 </div>
-                {bandTable(rarityShifts(state), rollableCap(state), rollableSize(state)).map((row) => (
+                {bandTable(rarityShifts(state), rollableCap(), rollableSize(state)).map((row) => (
                   <div className="rate-row" key={row.label}>
                     <span className={`mini-tier ${tierClass(row.tier)}`}>
                       {row.tier}

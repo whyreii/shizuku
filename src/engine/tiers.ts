@@ -4,7 +4,7 @@ import { ROSTER_SIZE } from "./roster";
 /**
  * Uniform draw. Every card you can roll carries the same weight, so its chance
  * is simply 1 / pool size, the way Mudae hands out spawns. Rarity is not a
- * property of the rank: it comes from the pool filter (`poolCap`), Mudae's
+ * property of the rank: it comes from the pool size (`POOL_SIZE`), Mudae's
  * limroul lever. A smaller pool makes every card left in it likelier.
  */
 export const MAX_SHIFTS = 6;

@@ -16,9 +16,9 @@ is the currency.
 - Badge tiers are ice: **Sleet · Hail · Glaze · Frost · Blizzard · Glacier · Aurora**.
 - Roster: hand-ranked 1,000 keep ranks 1–1000; AniList extras append by favourites.
   **50,845 characters are live** (full capture over 2,667 series).
-- Rarity: the draw is **uniform** — every rollable card is `1 / pool size`. Rarity
-  comes from the **roll pool** (Mudae's `$limroul`): the top 5,000 down to 1,500,
-  unlocked by tower floors. A tier sets a card's **value**, never its odds.
+- Rarity: the draw is **uniform** — every rollable card is `1 / pool size`. The pool
+  is fixed at the top **7,000** of the roster (Mudae's `$limroul` default); a tier
+  sets a card's **value**, never its odds.
 - Shell: one column, hairline chrome, serif display + mono numbers; only cards round.
 
 ## Status
@@ -70,31 +70,20 @@ Next:
 Uniform draw: every character you can roll has the same chance, `1 / pool size`.
 That is Mudae's model — a tier sets a card's **value**, never its odds.
 
-Rarity comes from the pool filter (`poolCap`), Mudae's `$limroul`: roll only the top
-N of the ranked roster, where N is a step. The floor only ratchets down, so draining
-the fountain refunds kakigori without costing you pool access. Wishes, the starwish
-and every card you already own bypass the cap and join the pool the way
-`$antidisable` works — they are added,
-not carved out, so they dilute everything else slightly.
+Rarity comes from the pool size, Mudae's `$limroul` at its default: the top **7,000**
+of the ranked roster. It is a fixed constant, not a setting. A smaller pool is
+strictly better (duplicates scale as `1 / pool`), so offering the player a choice
+was an upgrade rather than a trade — every save would sit at the minimum. Fixed at
+7,000 keeps the comparison honest and leaves composition as the only thing the
+player controls.
 
-| floors | pool | % of roster |
-| ------ | ---- | ----------- |
-| 0      | 5,000 | 9.8% |
-| 3      | 4,000 | 7.9% |
-| 6      | 3,000 | 5.9% |
-| 9      | 2,500 | 4.9% |
-| 12     | 2,000 | 3.9% |
-| 15     | 1,750 | 3.4% |
-| 18     | 1,500 | 2.95% |
+Wishes, the starwish and every card you already own bypass the 7,000 and join the
+pool the way `$antidisable` works — added, not carved out, so they dilute everything
+else slightly.
 
-Mudae's default is 7,000 of ~80,000 (8.75%) and its hard floor is 2,000 (2.5%), so
-5,000 and 1,500 are the same shape at this roster size.
-
-The pool is the strongest lever in the game: duplicate rate is
-`0.25 × owned / pool`, so shrinking 5,000 to 1,500 takes 30-day duplicates
-from 70 to 256 and income from 6,321/hr to 12,300/hr. Only the first step pays back
-fast (30h); the rest run 130-200h, which is why the tower's other perks carry the
-mid-game.
+At 7,000 the ladder reads: a specific card is **1 in 7,000** (700 h at 10 rolls/hr),
+the S+ band (ranks 1–10) is 0.14% of rolls, D (701–7,000) is 90%. A 30-day save
+lands around 54 duplicate rolls and 5,877 kakigori/hr.
 
 ## Known gaps
 

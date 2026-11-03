@@ -40,54 +40,16 @@ export const TOWER_BASE_COST = 5000;
 export const TOWER_FLOORS = 12;
 
 /**
- * Roll pool: Mudae's limroul. The draw is uniform, so the pool size is the
- * only lever on how often your own cards come back. Steps unlock on tower
- * floors and the floor only ever ratchets down.
+ * Roll pool: Mudae's limroul. The draw is uniform, so the pool size is the only
+ * thing that moves the duplicate rate. It is fixed at the Mudae default of 7,000
+ * because a smaller pool is strictly better: offered as a choice it is an upgrade,
+ * not a trade. Composition (pin and disable) is the player's lever instead.
  */
-export const POOL_DEFAULT = 5000;
-export const POOL_MIN = 1500;
-export const POOL_STEPS = [5000, 4000, 3000, 2500, 2000, 1750, 1500];
+export const POOL_SIZE = 7000;
 
-/** Floors needed to unlock each step below the default. */
-export const POOL_FLOOR_UNLOCKS: [number, number][] = [
-  [3, 4000],
-  [6, 3000],
-  [9, 2500],
-  [12, 2000],
-  [15, 1750],
-  [18, 1500],
-];
-
-export function poolFloorForFloors(floors: number): number {
-  let floor = POOL_DEFAULT;
-  for (const [need, value] of POOL_FLOOR_UNLOCKS) {
-    if (floors >= need) floor = Math.min(floor, value);
-  }
-  return floor;
-}
-
-/** The smallest pool this save has unlocked. Survives draining the fountain. */
-export function poolFloor(state: GameState): number {
-  const raw = Math.round(state.poolFloor ?? POOL_DEFAULT);
-  if (!Number.isFinite(raw)) return POOL_DEFAULT;
-  return Math.max(POOL_MIN, Math.min(POOL_DEFAULT, raw));
-}
-
-/** Floors still needed for the next step, or null when everything is open. */
-export function nextPoolUnlock(state: GameState): { floors: number; pool: number } | null {
-  const floor = poolFloor(state);
-  for (const [need, value] of POOL_FLOOR_UNLOCKS) {
-    if (value < floor) return { floors: need, pool: value };
-  }
-  return null;
-}
-
-/** The selected cap, clamped between the unlocked floor and the default. */
-export function rollableCap(state: GameState): number {
-  const chosen = Math.round(state.poolCap ?? POOL_DEFAULT);
-  const cap = Number.isFinite(chosen) && chosen > 0 ? chosen : POOL_DEFAULT;
-  const floor = poolFloor(state);
-  return Math.min(ROSTER_SIZE(), Math.max(floor, Math.min(POOL_DEFAULT, cap)));
+/** Cards a roll can land on: the top 7,000 of the ranked roster. */
+export function rollableCap(): number {
+  return Math.min(POOL_SIZE, ROSTER_SIZE());
 }
 
 export interface PoolBypass {
@@ -102,7 +64,7 @@ export interface PoolBypass {
  * carving one out; your own collection is never stranded behind a smaller pool.
  */
 export function poolBypass(state: GameState): PoolBypass {
-  const cap = rollableCap(state);
+  const cap = rollableCap();
   const ids = new Set<string>();
   let wished = 0;
   for (const id of state.wishes) {
@@ -130,16 +92,9 @@ export function poolBypass(state: GameState): PoolBypass {
   return { ids, wished, owned };
 }
 
-/** Cards a roll can land on: the top N plus everything past the cap above. */
+/** Cards a roll can land on: the pool plus anything past the cap above. */
 export function rollableSize(state: GameState): number {
-  return Math.min(rollableCap(state), ROSTER_SIZE()) + poolBypass(state).ids.size;
-}
-
-/** Short label for the pool control. */
-export function poolLabel(cap: number): string {
-  const n = cap / 1000;
-  const text = Number.isInteger(n) ? String(n) : String(Number(n.toFixed(2)));
-  return text + "k";
+  return rollableCap() + poolBypass(state).ids.size;
 }
 
 export interface TowerPerk {
@@ -467,7 +422,6 @@ export function buildFloor(prev: GameState, perkId: number): GameState {
       perks,
       spent: prev.tower.spent + cost,
     },
-    poolFloor: Math.min(poolFloor(prev), poolFloorForFloors(prev.tower.floors + 1)),
     log: [...prev.log],
   };
   log(state, `fountain basin ${state.tower.floors} built`, "power");
@@ -769,20 +723,12 @@ export function createInitialState(now: number): GameState {
     tower: { ...EMPTY_TOWER, perks: [] },
     lastDailyAt: 0,
     novelty: NOVELTY_MAX,
-    poolCap: POOL_DEFAULT,
-    poolFloor: POOL_DEFAULT,
     wishBoost: 0,
     wishBoostAt: 0,
     overrides: {},
     stats: { rolls: 0, claims: 0, keys: 0 },
     log: [],
   };
-}
-
-/** Pool values from an old save: 0 or junk falls back to the default. */
-function readPool(value: unknown, fallback: number): number {
-  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return fallback;
-  return Math.max(POOL_MIN, Math.min(POOL_DEFAULT, Math.round(value)));
 }
 
 /** Lifts v1 (category roster) and v2 (kakera field) saves to v3. */
@@ -829,8 +775,6 @@ export function hydrate(raw: Partial<GameState> & Record<string, unknown>): Game
     badges,
     tower: { ...EMPTY_TOWER, ...((raw.tower as GameState["tower"]) ?? {}), perks: ((raw.tower as GameState["tower"])?.perks ?? []).slice() },
     lastDailyAt: typeof raw.lastDailyAt === "number" ? raw.lastDailyAt : 0,
-    poolCap: readPool(raw.poolCap, base.poolCap),
-    poolFloor: readPool(raw.poolFloor, base.poolFloor),
     presets: readPresets(raw.presets),
   overrides: (raw.overrides as Record<string, Override>) ?? {},
     stats: (raw.stats as GameState["stats"]) ?? { rolls: 0, claims: 0, keys: 0 },
@@ -1016,7 +960,7 @@ export function roll(prev: GameState, now: number): RollResult {
 
   const members = ROSTER;
   if (members.length === 0) throw new GameError("Roster is empty.");
-  const cap = rollableCap(prev);
+  const cap = rollableCap();
   const bypass = poolBypass(prev).ids;
 
   const shifts = rarityShifts(prev);

@@ -21,11 +21,7 @@ import {
   keyCap,
   keysFor,
   hydrate,
-  nextPoolUnlock,
-  POOL_STEPS,
   poolBypass,
-  poolFloor,
-  poolLabel,
   rarityShifts,
   roll,
   rollableCap,
@@ -83,11 +79,9 @@ type Tab = (typeof TABS)[number];
 export default function App() {
   const { state, act, actWithUndo, undo, clearUndo, flash, notify, reset, restore } =
     useGame();
-  const poolNow = rollableCap(state);
+  const poolNow = rollableCap();
   const poolSize = rollableSize(state);
-  const poolNext = nextPoolUnlock(state);
   const poolBypassNow = poolBypass(state);
-  const poolSteps = POOL_STEPS.filter((n) => n >= poolFloor(state));
   const bypassParts: string[] = [];
   if (poolBypassNow.wished > 0) {
     bypassParts.push(
@@ -546,27 +540,11 @@ const fileRef = useRef<HTMLInputElement>(null);
           </div>
 
 
-          <div className="setting-row">
-            <span>Roll pool</span>
-            <div className="seg">
-              {poolSteps.map((n) => (
-                <button
-                  key={n}
-                  className={"seg-btn " + (poolNow === n ? "on" : "")}
-                  onClick={() => act((s) => ({ ...s, poolCap: n }))}
-                >
-                  {poolLabel(n)}
-                </button>
-              ))}
-            </div>
-          </div>
           <p className="modal-text">
-            The top {poolNow.toLocaleString("en-US")} of the ranked roster
-            {bypassText}{" "}
-            A smaller pool brings your own cards back more often {"\u2014"} Mudae's limroul.
-            {poolNext
-              ? " Floor " + poolNext.floors + " unlocks " + poolLabel(poolNext.pool) + "."
-              : " Every step is unlocked."}
+            Your pool is the top {poolNow.toLocaleString("en-US")} of the ranked
+            roster{bypassText}{" "}
+            Mudae's limroul, fixed at 7,000 {"\u2014"} every card in it is
+            equally likely.
           </p>
           <div className="rates">
             <div className="rates-head">
