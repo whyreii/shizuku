@@ -86,8 +86,21 @@ export default function App() {
   const poolNow = rollableCap(state);
   const poolSize = rollableSize(state);
   const poolNext = nextPoolUnlock(state);
-  const poolBypassed = poolBypass(state).size;
+  const poolBypassNow = poolBypass(state);
   const poolSteps = POOL_STEPS.filter((n) => n >= poolFloor(state));
+  const bypassParts: string[] = [];
+  if (poolBypassNow.wished > 0) {
+    bypassParts.push(
+      poolBypassNow.wished + (poolBypassNow.wished === 1 ? " wished card" : " wished cards"),
+    );
+  }
+  if (poolBypassNow.owned > 0) {
+    bypassParts.push(
+      poolBypassNow.owned + (poolBypassNow.owned === 1 ? " owned card" : " owned cards"),
+    );
+  }
+  const bypassText =
+    bypassParts.length > 0 ? ", plus " + bypassParts.join(" and ") + " past it." : ".";
   const [tab, setTab] = useState<Tab>("Album");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [rolling, setRolling] = useState(false);
@@ -549,11 +562,7 @@ const fileRef = useRef<HTMLInputElement>(null);
           </div>
           <p className="modal-text">
             The top {poolNow.toLocaleString("en-US")} of the ranked roster
-            {poolBypassed === 0
-              ? "."
-              : poolBypassed === 1
-                ? ", plus 1 wished card past it."
-                : ", plus " + poolBypassed + " wished cards past it."}{" "}
+            {bypassText}{" "}
             A smaller pool brings your own cards back more often {"\u2014"} Mudae's limroul.
             {poolNext
               ? " Floor " + poolNext.floors + " unlocks " + poolLabel(poolNext.pool) + "."

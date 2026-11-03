@@ -72,8 +72,9 @@ That is Mudae's model — a tier sets a card's **value**, never its odds.
 
 Rarity comes from the pool filter (`poolCap`), Mudae's `$limroul`: roll only the top
 N of the ranked roster, where N is a step. The floor only ratchets down, so draining
-the fountain refunds kakigori without costing you pool access. Wishes and the starwish
-bypass the cap and join the pool the way `$antidisable` works — they are added,
+the fountain refunds kakigori without costing you pool access. Wishes, the starwish
+and every card you already own bypass the cap and join the pool the way
+`$antidisable` works — they are added,
 not carved out, so they dilute everything else slightly.
 
 | floors | pool | % of roster |

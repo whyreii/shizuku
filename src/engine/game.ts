@@ -90,27 +90,49 @@ export function rollableCap(state: GameState): number {
   return Math.min(ROSTER_SIZE(), Math.max(floor, Math.min(POOL_DEFAULT, cap)));
 }
 
+export interface PoolBypass {
+  ids: Set<string>;
+  wished: number;
+  owned: number;
+}
+
 /**
- * Wishes and the starwish bypass the cap and join the pool, the way Mudae's
- * antidisable adds a character back instead of carving one out.
+ * Cards past the cap that still roll: wishes, the starwish, and everything you
+ * already own. Mudae's antidisable adds a character back to the pool instead of
+ * carving one out; your own collection is never stranded behind a smaller pool.
  */
-export function poolBypass(state: GameState): Set<string> {
+export function poolBypass(state: GameState): PoolBypass {
   const cap = rollableCap(state);
-  const out = new Set<string>();
+  const ids = new Set<string>();
+  let wished = 0;
   for (const id of state.wishes) {
     const char = characterById(id);
-    if (char && char.rank > cap) out.add(id);
+    if (char && char.rank > cap && !ids.has(id)) {
+      ids.add(id);
+      wished += 1;
+    }
   }
   if (state.starwish) {
     const star = characterById(state.starwish);
-    if (star && star.rank > cap) out.add(state.starwish);
+    if (star && star.rank > cap && !ids.has(state.starwish)) {
+      ids.add(state.starwish);
+      wished += 1;
+    }
   }
-  return out;
+  let owned = 0;
+  for (const id of Object.keys(state.owned)) {
+    const char = characterById(id);
+    if (char && char.rank > cap && !ids.has(id)) {
+      ids.add(id);
+      owned += 1;
+    }
+  }
+  return { ids, wished, owned };
 }
 
-/** Cards a roll can land on: the top N plus anything wished past the cap. */
+/** Cards a roll can land on: the top N plus everything past the cap above. */
 export function rollableSize(state: GameState): number {
-  return Math.min(rollableCap(state), ROSTER_SIZE()) + poolBypass(state).size;
+  return Math.min(rollableCap(state), ROSTER_SIZE()) + poolBypass(state).ids.size;
 }
 
 /** Short label for the pool control. */
@@ -995,7 +1017,7 @@ export function roll(prev: GameState, now: number): RollResult {
   const members = ROSTER;
   if (members.length === 0) throw new GameError("Roster is empty.");
   const cap = rollableCap(prev);
-  const bypass = poolBypass(prev);
+  const bypass = poolBypass(prev).ids;
 
   const shifts = rarityShifts(prev);
   let targetId: string | null = null;
