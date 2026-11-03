@@ -21,18 +21,22 @@ import {
   keyCap,
   keysFor,
   hydrate,
-  POOL_DEFAULT,
-  POOL_OPTIONS,
+  nextPoolUnlock,
+  POOL_STEPS,
+  poolBypass,
+  poolFloor,
   poolLabel,
+  rarityShifts,
   roll,
-  wishesOutsidePool,
+  rollableCap,
+  rollableSize,
   rollsPerReset,
   starwishBoostPercent,
   wishBoostPercent,
 } from "./engine/game";
 import { characterById, onRosterChange } from "./engine/roster";
 import { rankValue } from "./engine/roster";
-import { tierClass, tierForRank } from "./engine/tiers";
+import { bandTable, tierClass, tierForRank } from "./engine/tiers";
 import { prefetchPortraits, usePortrait } from "./engine/images";
 import { Modal } from "./components/Modal";
 import { sections } from "./components/helpSections";
@@ -79,6 +83,11 @@ type Tab = (typeof TABS)[number];
 export default function App() {
   const { state, act, actWithUndo, undo, clearUndo, flash, notify, reset, restore } =
     useGame();
+  const poolNow = rollableCap(state);
+  const poolSize = rollableSize(state);
+  const poolNext = nextPoolUnlock(state);
+  const poolBypassed = poolBypass(state).size;
+  const poolSteps = POOL_STEPS.filter((n) => n >= poolFloor(state));
   const [tab, setTab] = useState<Tab>("Album");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [rolling, setRolling] = useState(false);
@@ -527,12 +536,10 @@ const fileRef = useRef<HTMLInputElement>(null);
           <div className="setting-row">
             <span>Roll pool</span>
             <div className="seg">
-              {POOL_OPTIONS.map((n) => (
+              {poolSteps.map((n) => (
                 <button
                   key={n}
-                  className={
-                    "seg-btn " + ((state.poolCap ?? POOL_DEFAULT) === n ? "on" : "")
-                  }
+                  className={"seg-btn " + (poolNow === n ? "on" : "")}
                   onClick={() => act((s) => ({ ...s, poolCap: n }))}
                 >
                   {poolLabel(n)}
@@ -541,18 +548,38 @@ const fileRef = useRef<HTMLInputElement>(null);
             </div>
           </div>
           <p className="modal-text">
-            How deep into the ranked roster a roll can land. A smaller pool
-            brings your own cards back more often {"\u2014"} the same lever as
-            Mudae's limroul.
-            {wishesOutsidePool(state) > 0 ? (
-              <>
-                {" "}
-                {wishesOutsidePool(state)}{" "}
-                {wishesOutsidePool(state) === 1 ? "wished card sits" : "wished cards sit"}{" "}
-                past it.
-              </>
-            ) : null}
+            The top {poolNow.toLocaleString("en-US")} of the ranked roster
+            {poolBypassed === 0
+              ? "."
+              : poolBypassed === 1
+                ? ", plus 1 wished card past it."
+                : ", plus " + poolBypassed + " wished cards past it."}{" "}
+            A smaller pool brings your own cards back more often {"\u2014"} Mudae's limroul.
+            {poolNext
+              ? " Floor " + poolNext.floors + " unlocks " + poolLabel(poolNext.pool) + "."
+              : " Every step is unlocked."}
           </p>
+          <div className="rates">
+            <div className="rates-head">
+              <span>band</span>
+              <span>per card</span>
+              <span>band total</span>
+            </div>
+            {bandTable(rarityShifts(state), poolNow, poolSize).map((row) => (
+              <div className="rate-row" key={row.label}>
+                <span className={"mini-tier " + tierClass(row.tier)}>
+                  {row.tier}
+                </span>
+                <span className="rate-band">{row.label}</span>
+                <span className="rate-pct">
+                  {(row.perCharacter * 100).toFixed(3)}%
+                </span>
+                <span className="rate-band-total">
+                  {(row.bandTotal * 100).toFixed(2)}%
+                </span>
+              </div>
+            ))}
+          </div>
           <div className="setting-row">
             <span>Novelty</span>
             <div className="seg">

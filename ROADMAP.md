@@ -17,8 +17,8 @@ is the currency.
 - Roster: hand-ranked 1,000 keep ranks 1–1000; AniList extras append by favourites.
   **50,845 characters are live** (full capture over 2,667 series).
 - Rarity: the draw is **uniform** — every rollable card is `1 / pool size`. Rarity
-  comes from the **roll pool** (Mudae's `$limroul`): top 1,000 / 5,000 / 10,000, or
-  the whole roster. A tier sets a card's **value**, never its odds.
+  comes from the **roll pool** (Mudae's `$limroul`): the top 5,000 down to 1,500,
+  unlocked by tower floors. A tier sets a card's **value**, never its odds.
 - Shell: one column, hairline chrome, serif display + mono numbers; only cards round.
 
 ## Status
@@ -68,36 +68,37 @@ Next:
 ## Rarity
 
 Uniform draw: every character you can roll has the same chance, `1 / pool size`.
-That is Mudae's model — a tier sets a card's **value**, never its odds. There is no
-rank ladder in the weighting, so the old denominator bug (`poolSize` counting 6,366
-where `poolIndex` routed 33,479) is gone with it.
+That is Mudae's model — a tier sets a card's **value**, never its odds.
 
-Rarity comes from the pool filter (`poolCap` in Settings, the `$limroul` lever): roll
-only the top N of the ranked roster. It is not cosmetic. Income is `total keys × 12`
-and keys come from rolling cards you already own, so the pool size sets how often
-your collection repeats:
+Rarity comes from the pool filter (`poolCap`), Mudae's `$limroul`: roll only the top
+N of the ranked roster, where N is a step. The floor only ratchets down, so draining
+the fountain refunds kakigori without costing you pool access. Wishes and the starwish
+bypass the cap and join the pool the way `$antidisable` works — they are added,
+not carved out, so they dilute everything else slightly.
 
-| roll pool | keys, 30 days | duplicate rolls | crystals | value payouts | income/hr |
-| --------- | ------------- | --------------- | -------- | ------------- | --------- |
-| 1,000     | 1,198         | 385             | 167      | 55            | 14,733    |
-| 5,000     | 548           | 67              | 28       | 2             | 6,738     |
-| 10,000    | 431           | 30              | 13       | 0             | 5,301     |
-| 50,845    | 368           | 5               | 1        | 0             | 4,524     |
+| floors | pool | % of roster |
+| ------ | ---- | ----------- |
+| 0      | 5,000 | 9.8% |
+| 3      | 4,000 | 7.9% |
+| 6      | 3,000 | 5.9% |
+| 9      | 2,500 | 4.9% |
+| 12     | 2,000 | 3.9% |
+| 15     | 1,750 | 3.4% |
+| 18     | 1,500 | 2.95% |
 
-30 days at 10 rolls/hour, 12 claims/day, novelty 4 — simulated against the real
-constants. The whole roster still works; it just becomes a claim-only loop where
-crystals, L6 payouts and key levels never fire. **5,000 is the default.**
+Mudae's default is 7,000 of ~80,000 (8.75%) and its hard floor is 2,000 (2.5%), so
+5,000 and 1,500 are the same shape at this roster size.
 
-Wishes on characters past the pool can never roll; the settings copy says how many.
-
-Rarity shifts (four badges + the fountain lens) nudge S+ by +10% and S by +5% per
-shift. They used to add percentage points to a pool ladder; uniform weights make
-percentage points meaningless, so they are multipliers now.
+The pool is the strongest lever in the game: duplicate rate is
+`0.25 × owned / pool`, so shrinking 5,000 to 1,500 takes 30-day duplicates
+from 70 to 256 and income from 6,321/hr to 12,300/hr. Only the first step pays back
+fast (30h); the rest run 130-200h, which is why the tower's other perks carry the
+mid-game.
 
 ## Known gaps
 
-- The pool filter is a settings knob, not a progression reward yet: Mudae lowers
-  `$limroul` with tower floors and kakera loots.
+- Lootboxes never touch the pool: Mudae's loots shave limits too, but `LOOT_COST`
+  is 1,000 against a ~12,000/hr income, so loot-gated steps would be nearly free.
 - No automated tests around economy constants.
 - P22: host chosen (Cloudflare Pages, unlimited bandwidth); deployment deferred by the owner.
 - Keyboard shortcuts and the shatter animation are wired but not measured end-to-end.

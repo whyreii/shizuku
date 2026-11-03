@@ -53,15 +53,23 @@ export interface BandRow {
   tier: Tier;
 }
 
-/** One row per tier band, in live odds for a roll pool of `pool` cards. */
-export function bandTable(shifts = 0, pool = ROSTER_SIZE()): BandRow[] {
-  const total = Math.max(1, Math.min(pool, ROSTER_SIZE()));
+/**
+ * One row per tier band. `cap` is the highest rollable rank; `total` is the
+ * whole pool, which is larger when wishes bypass the cap.
+ */
+export function bandTable(
+  shifts = 0,
+  cap = ROSTER_SIZE(),
+  total = cap,
+): BandRow[] {
+  const top = Math.max(1, Math.min(cap, ROSTER_SIZE()));
+  const extra = Math.max(0, total - top);
   const s = clampShifts(shifts);
-  const sPlus = Math.min(10, total);
-  const sBand = Math.max(0, Math.min(50, total) - 10);
-  const rest = Math.max(0, total - 50);
+  const sPlus = Math.min(10, top);
+  const sBand = Math.max(0, Math.min(50, top) - 10);
+  const rest = Math.max(0, top - 50);
   const weightSum =
-    sPlus * (1 + SHIFT_SP * s) + sBand * (1 + SHIFT_S * s) + rest;
+    sPlus * (1 + SHIFT_SP * s) + sBand * (1 + SHIFT_S * s) + rest + extra;
 
   const edges: [Tier, number][] = [
     ["S+", 10],
@@ -69,12 +77,12 @@ export function bandTable(shifts = 0, pool = ROSTER_SIZE()): BandRow[] {
     ["A", 150],
     ["B", 350],
     ["C", 700],
-    ["D", total],
+    ["D", top],
   ];
   const rows: BandRow[] = [];
   let start = 1;
   for (const [tier, edge] of edges) {
-    const end = Math.min(edge, total);
+    const end = Math.min(edge, top);
     const count = end - start + 1;
     if (count <= 0) break;
     const per = weightForRank(start, shifts) / weightSum;
